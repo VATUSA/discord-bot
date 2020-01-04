@@ -1,0 +1,23 @@
+{
+  "name": "vatusa-discord-tmu",
+  "version": "0.1a",
+  "description": "VATUSA TMU Maps and Notices for Discord",
+  "main": "index.js",
+  "scripts": {
+    "test": ""
+  },
+  "keywords": [
+    "vatusa",
+    "tmu"
+  ],
+  "author": "Blake Nahin",
+  "license": "MIT",
+  "dependencies": {
+    "@discordjs/uws": "^11.149.1",
+    "discord.js": "^11.5.1",
+    "dotenv": "^8.2.0",
+    "erlpack": "github:hammerandchisel/erlpack",
+    "fs": "0.0.1-security",
+    "python": "0.0.4"
+  }
+}
