@@ -9,7 +9,7 @@ const {Client, RichEmbed, Collection} = require('discord.js'),
 
 //Initiate Environment Variables
 require('dotenv').config()
-const prefix = process.env.prefix
+const prefix = process.env.PREFIX
 
 //Load Commands
 client.commands = new Collection()
@@ -44,4 +44,4 @@ client.on('message', message => {
 })
 
 //Log in to Discord
-client.login(process.env.botToken)
+client.login(process.env.BOT_TOKEN)
