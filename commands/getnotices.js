@@ -22,7 +22,7 @@ module.exports = {
     let req = axios
     for (const call of callList) {
       //Check for dev API
-      if (process.env.apiUrl.indexOf('dev') > -1) {
+      if (process.env.API_URL.indexOf('dev') > -1) {
         req = axios.create({
           httpsAgent: new https.Agent({
             rejectUnauthorized: false
@@ -31,7 +31,7 @@ module.exports = {
       }
 
       //Make the API Call
-      req.get(process.env.apiUrl + 'tmu/notices/' + call)
+      req.get(process.env.API_URL + 'tmu/notices/' + call)
         .then(result => {
           const {status, data} = result
           if (status !== 200) {
