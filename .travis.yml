@@ -1,0 +1,15 @@
+language: node_js
+node_js:
+  - 12
+services:
+  - docker
+after_success:
+  - docker build -t vatusa/tmu-bot .
+  - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" = "false" ];
+    then docker tag vatusa/tmu-bot vatusa/tmu-bot:latest;
+    docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; docker push vatusa/tmu-bot:latest;
+    fi
+  - if [ "$TRAVIS_BRANCH" == "dev" ] && [ "$TRAVIS_PULL_REQUEST" = "false" ];
+    then docker tag vatusa/tmu-bot vatusa/tmu-bot:devel;
+    docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; docker push vatusa/tmu-bot:devel;
+    fi
