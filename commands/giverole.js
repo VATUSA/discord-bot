@@ -36,6 +36,12 @@ module.exports = {
           console.log(`Collected ${reaction.emoji.name} from ${user.tag}`)
         })
 
+        collector.on('dispose', (reaction, user) => {
+          const role = message.guild.roles.cache.find(r => r.name === 'Pilots')
+          message.guild.member(user).roles.remove(role)
+          console.log(`Removed ${reaction.emoji.name} from ${user.tag}`)
+        })
+
         collector.on('end', collected => {
           console.log(`Collected ${collected.size} items`)
         })
