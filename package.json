@@ -1,16 +1,17 @@
 {
   "name": "vatusa-discord-tmu",
-  "version": "0.1a",
+  "version": "0.0.1",
   "description": "VATUSA TMU Maps and Notices for Discord",
+  "author": "Blake Nahin <vatusa6@vatusa.net>",
   "main": "index.js",
   "scripts": {
-    "test": ""
+    "start": "node app.js",
+    "test": "jshint commands/ && jshint app.js"
   },
   "keywords": [
     "vatusa",
     "tmu"
   ],
-  "author": "Blake Nahin",
   "license": "MIT",
   "dependencies": {
     "@discordjs/uws": "^11.149.1",
@@ -19,6 +20,7 @@
     "dotenv": "^8.2.0",
     "erlpack": "github:hammerandchisel/erlpack",
     "fs": "0.0.1-security",
+    "jshint": "^2.11.0",
     "npm": "^6.14.5",
     "python": "0.0.4",
     "turndown": "^5.0.3"
