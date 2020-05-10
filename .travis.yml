@@ -1,14 +1,19 @@
 language: node_js
 node_js:
   - 12
+compiler:
+  - gcc
 env:
-  - CXX=g++-7
+  - CXX="g++-4.9"
+  - CC="gcc-4.9"
 addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
+      - llvm-toolchain-precise-3.5 # not sure why we needed this
     packages:
-      - g++-7
+      - gcc-4.9
+      - g++-4.9
 services:
   - docker
 after_success:
