@@ -1,2 +1,2 @@
-# discordtmu
-Discord app for VATUSA TMU Notices and Maps
+# Discord-Bot
+Discord bot for the official VATUSA Discord.
