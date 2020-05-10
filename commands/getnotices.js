@@ -35,7 +35,7 @@ module.exports = {
         .then(result => {
           const {status, data} = result
           if (status !== 200) {
-            sendError(servMessage, RichEmbed, data.msg)
+            sendError(servMessage, MessageEmbed, data.msg)
           } else {
             //Check if Notices exist
             if (Object.keys(data).length == 1 && data.hasOwnProperty('testing')) {
@@ -59,7 +59,7 @@ module.exports = {
                 if (data[notice]) {
                   console.log(data[notice])
                   const {tmu_facility_id, priority, message, expire_date, tmu_facility} = data[notice]
-                  let color = undefined
+                  let color = 0x5cb85c
                   switch (priority) {
                     case 1:
                       color = 0xAA6708
