@@ -1,11 +1,11 @@
 /**
- * VATUSA TMU for Discord
+ * VATUSA Discord Bot
  * @author Blake Nahin <vatusa6@vatusa.net>
  */
 
 //Initiate Discord API
-const {Client, RichEmbed, Collection} = require('discord.js'),
-      client                          = new Client()
+const {Client, Collection} = require('discord.js'),
+      client               = new Client()
 
 //Initiate Environment Variables
 require('dotenv').config()
@@ -27,6 +27,11 @@ client.on('ready', () => {
 
 //Message Listener
 client.on('message', message => {
+  if (!message.author.bot && (message.content.toLowerCase().startsWith('hi')
+    || message.content.toLowerCase().startsWith('hello') || message.content.toLowerCase().startsWith('howdy')
+    || message.content.toLowerCase().startsWith('hey')))
+    message.channel.send(`Heyyy ${message.author}`)
+
   if (!message.content.startsWith(prefix)) return //Process messages that start with prefix
 
   const args = message.content.slice(prefix.length).split(/ +/) //Explode rest of message into array
