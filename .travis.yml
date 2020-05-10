@@ -3,8 +3,6 @@ os:
 language: node_js
 node_js:
   - 12
-install:
-  - npm install
 services:
   - docker
 after_success:
