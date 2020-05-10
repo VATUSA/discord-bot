@@ -3,7 +3,7 @@ module.exports = {
   description: 'Get Notices',
   execute (servMessage, args) {
     //Initialize Vars
-    const {Client, RichEmbed, Collection} = require('discord.js'),
+    const {Client, MessageEmbed, Collection} = require('discord.js'),
           client                          = new Client(),
           axios                           = require('axios'),
           https                           = require('https'),
@@ -40,7 +40,7 @@ module.exports = {
             //Check if Notices exist
             if (Object.keys(data).length == 1 && data.hasOwnProperty('testing')) {
               //No Active Notices
-              const embed = new RichEmbed()
+              const embed = new MessageEmbed()
               embed.setTitle('No Notices')
                 // Set the color of the embed
                 .setColor(0xAA6708)
@@ -73,7 +73,7 @@ module.exports = {
 
                   const turndown = new TurndownService() //convert HTML to Markdown
 
-                  const embed = new RichEmbed()
+                  const embed = new MessageEmbed()
                   // Set the title of the field
                   console.log(tmu_facility)
                   embed.setTitle(tmu_facility.name)
@@ -93,14 +93,14 @@ module.exports = {
         })
         .catch(error => {
           console.log(error)
-          sendError(servMessage, RichEmbed, error.data !== undefined ? error.data.toJSON() : error)
+          sendError(servMessage, MessageEmbed, error.data !== undefined ? error.data.toJSON() : error)
         })
     }
   },
 }
 
-function sendError (messageObj, re, msg) {
-  const embed = new re()
+function sendError (messageObj, me, msg) {
+  const embed = new me()
     // Set the title of the field
     .setTitle('Error!')
     // Set the color of the embed
