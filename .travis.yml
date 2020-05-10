@@ -3,9 +3,8 @@ os:
 language: node_js
 node_js:
   - 12
-compiler:
-  - clang
-  - gcc
+env:
+  - CXX="g++-4.8"
 addons:
   apt:
     sources:
@@ -14,11 +13,7 @@ addons:
     packages:
       - gcc-4.9
       - g++-4.8
-      - cmake
-      - cmake-data
-      - clang-3.5
 install:
-  - export CXX="g++-4.8" CC="clang-3.5";
   - npm install
 services:
   - docker
