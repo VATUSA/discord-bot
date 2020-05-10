@@ -19,7 +19,7 @@ addons:
       - clang-3.5
 install:
   - export CXX="g++-4.8" CC="clang-3.5";
-  - npm ci
+  - npm install
 services:
   - docker
 after_success:
