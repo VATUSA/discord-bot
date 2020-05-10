@@ -13,12 +13,12 @@ addons:
       - llvm-toolchain-precise-3.5
     packages:
       - gcc-4.9
-      - g++-4.9
+      - g++-4.8
       - cmake
       - cmake-data
       - clang-3.5
 install:
-  - export CXX="g++-4.9" CC="clang-3.5";
+  - export CXX="g++-4.8" CC="clang-3.5";
   - npm ci
 services:
   - docker
