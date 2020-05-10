@@ -6,12 +6,12 @@ node_js:
 services:
   - docker
 after_success:
-  - docker build -t vatusa/tmu-bot .
+  - docker build -t vatusa/discord-bot .
   - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" = "false" ];
-    then docker tag vatusa/tmu-bot vatusa/tmu-bot:latest;
-    docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; docker push vatusa/tmu-bot:latest;
+    then docker tag vatusa/discord-bot vatusa/discord-bot:latest;
+    docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; docker push vatusa/discord-bot:latest;
     fi
   - if [ "$TRAVIS_BRANCH" == "dev" ] && [ "$TRAVIS_PULL_REQUEST" = "false" ];
-    then docker tag vatusa/tmu-bot vatusa/tmu-bot:devel;
-    docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; docker push vatusa/tmu-bot:devel;
+    then docker tag vatusa/discord-bot vatusa/discord-bot:dev;
+    docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; docker push vatusa/discord-bot:dev;
     fi
