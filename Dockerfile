@@ -5,4 +5,4 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 COPY . .
 
-ENTRYPOINT build.sh
+ENTRYPOINT /usr/src/app/build.sh
