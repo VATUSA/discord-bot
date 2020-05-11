@@ -3,11 +3,7 @@ module.exports = {
   description: 'Assign Role',
   execute (message, args) {
     //Initialize Vars
-    const {Client, MessageEmbed, Collection} = require('discord.js'),
-          client                             = new Client(),
-          axios                              = require('axios'),
-          https                              = require('https'),
-          TurndownService                    = require('turndown')
+    const { MessageEmbed } = require('discord.js')
 
     //Convert params to array
     let params = ['']

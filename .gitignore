@@ -105,3 +105,6 @@ dist
 
 #IDE Data
 .idea/
+
+#Google Cloud Platform auth data
+gcp-auth.json
