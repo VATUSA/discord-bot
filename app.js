@@ -27,7 +27,7 @@ client.on('ready', () => {
 
 //Message Listener
 client.on('message', message => {
-  if (!message.author.bot && (message.content.toLowerCase().startsWith('hi')
+  if (!message.author.bot && message.mentions.users.first() && message.mentions.users.first().bot && (message.content.toLowerCase().startsWith('hi')
     || message.content.toLowerCase().startsWith('hello') || message.content.toLowerCase().startsWith('howdy')
     || message.content.toLowerCase().startsWith('hey')))
     message.channel.send(`Heyyy ${message.author}`)
