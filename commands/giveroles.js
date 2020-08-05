@@ -164,6 +164,7 @@ module.exports = {
               if (nickChange) embed.setFooter(`Your new nickname is: ${newNick}`)
 
               // Send the embed to the same channel as the message
+              servMessage.channel.send(`${servMessage.author}`)
               servMessage.channel.send(embed)
             })
           }
