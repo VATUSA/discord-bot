@@ -3,6 +3,12 @@
  * @author Blake Nahin <vatusa6@vatusa.net>
  */
 
+//Initiate Environment Variables
+require('dotenv').config()
+const prefix      = process.env.PREFIX,
+      expressPort = process.env.SERVER_PORT,
+      mainURL     = process.env.MAIN_URL
+
 //Initiate Discord API and Express
 const {Client, Collection} = require('discord.js'),
       client               = new Client(),
@@ -10,17 +16,11 @@ const {Client, Collection} = require('discord.js'),
       app                  = express(),
       cors                 = require('cors'),
       corsOptions          = {
-        origin              : 'http://www.vatusa.devel',
+        origin              : mainURL,
         optionsSuccessStatus: 200,
         credentials         : true
       },
       helmet               = require('helmet')
-
-//Initiate Environment Variables
-require('dotenv').config()
-const prefix      = process.env.PREFIX,
-      expressPort = process.env.SERVER_PORT,
-      mainURL     = process.env.MAIN_URL
 
 //Load Commands
 client.commands = new Collection()
