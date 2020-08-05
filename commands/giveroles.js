@@ -84,7 +84,7 @@ module.exports = {
             }
 
             //Determine Region
-            async function determineRegion () {
+            const determineRegion = async function() {
               if (user.facility === 'ZAE') roles.push('Academy')
               else if (user.facility === 'ZZN') roles.push('Non-Member')
               else if (user.facility !== 'ZHQ') {
