@@ -3,5 +3,6 @@
     "forin": true,
     "asi": true,
     "laxbreak": true,
-    "loopfunc": true
+    "loopfunc": true,
+    "latedef": "nofunc"
 }
