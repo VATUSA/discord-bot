@@ -1,6 +1,6 @@
 module.exports = {
-  name       : 'giverole',
-  description: 'Assign Role',
+  name       : 'givepilotrole',
+  description: 'Assign Pilot Role',
   execute (message, args) {
     //Initialize Vars
     const { MessageEmbed } = require('discord.js')
@@ -24,17 +24,19 @@ module.exports = {
       }
 
       message.channel.send(embed).then(message => {
+        message.react('✈️').catch(e => console.log(e))
         const collector = message.createReactionCollector(filter)
 
         collector.on('collect', (reaction, user) => {
+          if(user.bot) return;
           const role = message.guild.roles.cache.find(r => r.name === 'Pilots')
-          message.guild.member(user).roles.add(role)
+          message.guild.member(user).roles.add(role).catch(e => console.log(e))
           console.log(`Collected ${reaction.emoji.name} from ${user.tag}`)
         })
 
         collector.on('dispose', (reaction, user) => {
           const role = message.guild.roles.cache.find(r => r.name === 'Pilots')
-          message.guild.member(user).roles.remove(role)
+          message.guild.member(user).roles.remove(role).catch(e => console.log(e))
           console.log(`Removed ${reaction.emoji.name} from ${user.tag}`)
         })
 
