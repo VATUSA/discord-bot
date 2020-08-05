@@ -84,7 +84,7 @@ module.exports = {
             }
 
             //Determine Region
-            const determineRegion = async function() {
+            const determineRegion = async function () {
               if (user.facility === 'ZAE') roles.push('Academy')
               else if (user.facility === 'ZZN') roles.push('Non-Member')
               else if (user.facility !== 'ZHQ') {
@@ -161,10 +161,9 @@ module.exports = {
                 .setColor(0x5cb85c)
                 // Set the main content of the embed
                 .setDescription(roleStr)
-              if (nickChange) embed.setFooter(`Your new nickname is: ${newNick}`)
+              embed.setFooter(nickChange ? `Your new nickname is: ${newNick}` : newNick)
 
               // Send the embed to the same channel as the message
-              servMessage.channel.send(`${servMessage.author}`)
               servMessage.channel.send(embed)
             })
           }
