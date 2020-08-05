@@ -125,7 +125,7 @@ module.exports = {
                   newNick = `${user.fname} ${user.lname} | ${user.rating_short}`
                   i = roles.length
                 } else if (facStaff !== false) {
-                  newNick = `${user.fname} ${user.lname} | ${user.facility}_${facStaff}`
+                  newNick = `${user.fname} ${user.lname} | ${user.facility} ${facStaff}`
                   i = roles.length
                 } else if (!member.hasPermission('ADMINISTRATOR')) {
                   newNick = `${user.fname} ${user.lname} | ${user.facility} ${user.rating_short}`
@@ -140,7 +140,9 @@ module.exports = {
               //Assign Roles
               let roleStr = ''
               member.roles.cache.forEach(role => {
-                if (!role.permissions.has('ADMINISTRATOR') && role.id !== guild.roles.everyone.id && role.name !== 'Pilots')
+                if (!role.permissions.has('ADMINISTRATOR') && role.id !== guild.roles.everyone.id
+                  && role.name !== 'Pilots' && role.name !== 'TMU'
+                && role.name !== 'Trainers' && role.name !== 'Facilitators')
                   member.roles.remove(role).catch(e => console.log(e))
               })
               for (let i = 0; i < roles.length; i++) {
