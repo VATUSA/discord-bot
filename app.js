@@ -3,13 +3,24 @@
  * @author Blake Nahin <vatusa6@vatusa.net>
  */
 
-//Initiate Discord API
+//Initiate Discord API and Express
 const {Client, Collection} = require('discord.js'),
-      client               = new Client()
+      client               = new Client(),
+      express              = require('express'),
+      app                  = express(),
+      cors                 = require('cors'),
+      corsOptions          = {
+        origin              : 'http://www.vatusa.devel',
+        optionsSuccessStatus: 200,
+        credentials         : true
+      },
+      helmet               = require('helmet')
 
 //Initiate Environment Variables
 require('dotenv').config()
-const prefix = process.env.PREFIX
+const prefix      = process.env.PREFIX,
+      expressPort = process.env.SERVER_PORT,
+      mainURL     = process.env.MAIN_URL
 
 //Load Commands
 client.commands = new Collection()
@@ -50,3 +61,19 @@ client.on('message', message => {
 
 //Log in to Discord
 client.login(process.env.BOT_TOKEN)
+
+/** Server - Assign Roles **/
+app.use(helmet())
+  .options('*', cors(corsOptions))
+app.post('/assignRoles/:id', cors(corsOptions), (req, res) => {
+  const id = req.params.id
+  if (!client.guilds.cache.get(process.env.DISCORD_ID).members.cache.get(id))
+    return res.json({
+      status: 'error',
+      msg   : 'You are not a member of the VATUSA Official Discord. Join it using the link below the Assign Roles button.'
+    })
+  client.commands.get('giveroles').execute(null, id, res, client.guilds.cache.get(process.env.DISCORD_ID))
+})
+app.listen(expressPort, () => {
+  console.log(`Express listening on port ${expressPort}`)
+})
