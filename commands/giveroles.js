@@ -111,7 +111,6 @@ module.exports = {
                 })
               }
             }
-
             determineRegion().then(() => {
 
               //Determine Rating
