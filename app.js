@@ -74,6 +74,9 @@ app.post('/assignRoles/:id', cors(corsOptions), (req, res) => {
     })
   client.commands.get('giveroles').execute(null, id, res, client.guilds.cache.get(process.env.DISCORD_ID))
 })
+app.get('/*', (req, res) => {
+  res.send('Hello there. This is the VATUSA Discord Bot Server. If you are here, tell Blake the codeword: sharkbait.')
+})
 app.listen(expressPort, () => {
   console.log(`Express listening on port ${expressPort}`)
 })
