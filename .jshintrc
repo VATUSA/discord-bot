@@ -4,5 +4,5 @@
     "asi": true,
     "laxbreak": true,
     "loopfunc": true,
-    "latedef": "nofunc"
+    "latedef": false
 }
