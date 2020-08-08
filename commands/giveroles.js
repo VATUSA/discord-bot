@@ -180,7 +180,7 @@ module.exports = {
   }
 }
 
-function sendError (messageObj, me, msg, res, footer = true, header) {
+function sendError (messageObj, me, msg, res, footer = true, header = false) {
   if (res)
     return res.json({
       status: 'error',
@@ -188,7 +188,7 @@ function sendError (messageObj, me, msg, res, footer = true, header) {
     })
   const embed = new me()
     // Set the title of the field
-    .setTitle(header ?? 'Error!')
+    .setTitle(header ? header : 'Error!')
     // Set the color of the embed
     .setColor(0xFF0000)
     // Set the main content of the embed
