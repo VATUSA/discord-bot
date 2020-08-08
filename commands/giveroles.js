@@ -174,13 +174,13 @@ module.exports = {
       .catch(error => {
         console.log(error)
         if (error.response.status === 404) {
-          sendError(servMessage, MessageEmbed, 'Your Discord account is not linked on VATUSA or you are not in the VATUSA database. Link it here: https://vatusa.net/my/profile', res, false)
+          sendError(servMessage, MessageEmbed, 'Your Discord account is not linked on VATUSA or you are not in the VATUSA database. Link it here: https://vatusa.net/my/profile', res, false, "Not Linked!")
         } else sendError(servMessage, MessageEmbed, error.data !== undefined ? error.data.toJSON() : 'Unable to communicate with API.', res)
       })
   }
 }
 
-function sendError (messageObj, me, msg, res, footer = true) {
+function sendError (messageObj, me, msg, res, footer = true, header) {
   if (res)
     return res.json({
       status: 'error',
@@ -188,7 +188,7 @@ function sendError (messageObj, me, msg, res, footer = true) {
     })
   const embed = new me()
     // Set the title of the field
-    .setTitle('Error!')
+    .setTitle(header ?? 'Error!')
     // Set the color of the embed
     .setColor(0xFF0000)
     // Set the main content of the embed
