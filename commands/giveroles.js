@@ -174,7 +174,7 @@ module.exports = {
       .catch(error => {
         console.log(error)
         if (error.response.status === 404) {
-          sendError(servMessage, MessageEmbed, 'Your Discord account is not linked on VATUSA or you are not in the VATUSA database. Link it here: https://vatusa.net/my/profile', res, false, "Not Linked!")
+          sendError(servMessage, MessageEmbed, 'Your Discord account is not linked on VATUSA or you are not in the VATUSA database. Link it here: https://vatusa.net/my/profile', res, false, "Not Linked")
         } else sendError(servMessage, MessageEmbed, error.data !== undefined ? error.data.toJSON() : 'Unable to communicate with API.', res)
       })
   }
