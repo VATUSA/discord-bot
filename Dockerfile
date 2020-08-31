@@ -9,3 +9,5 @@ RUN npm ci
 
 RUN chmod +x /usr/src/app/build.sh
 ENTRYPOINT /usr/src/app/build.sh
+
+EXPOSE 3000
