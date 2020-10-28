@@ -51,8 +51,8 @@ module.exports = {
             for (let i = 0; i < user.roles.length; i++) {
               //Roles Table
               const role = user.roles[i]
-              //if (role.role.match(/US\d+/))
-              // roles.push('VATUSA Staff')
+              if (role.role.match(/US\d+/))
+                roles.push('VATUSA Staff')
               if (role.role === 'USWT')
                 roles.push('Web Team')
               if (role.role === 'ACE')
