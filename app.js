@@ -1,6 +1,6 @@
 /**
  * VATUSA Discord Bot
- * @author Blake Nahin <vatusa6@vatusa.net>
+ * @author Blake Nahin <vatusa12@vatusa.net>
  */
 
 //Initiate Environment Variables
