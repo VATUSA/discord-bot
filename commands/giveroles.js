@@ -94,14 +94,20 @@ module.exports = {
                     sendError(servMessage, MessageEmbed, 'Unable to determine region from API.', res)
                   } else {
                     switch (parseInt(data.facility.info.region)) {
-                      case 7:
+                      case 4:
                         roles.push('Western Region')
                         break
-                      case 8:
-                        roles.push('Southern Region')
+                      case 5:
+                        roles.push('South Central Region')
                         break
-                      case 9:
+                      case 6:
+                        roles.push('Midwestern Region')
+                        break
+                      case 7:
                         roles.push('Northeastern Region')
+                        break
+                      case 8:
+                        roles.push('Southeastern Region')
                         break
                     }
                   }
