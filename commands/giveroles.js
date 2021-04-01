@@ -22,11 +22,12 @@ module.exports = {
     //Make the API Call to determine user information
     req.get(process.env.API_URL + 'user/' + (servMessage ? servMessage.author.id : id) + '?d')
       .then(result => {
+        console.log(result)
           const {status, data} = result
           if (status !== 200) {
             sendError(servMessage, MessageEmbed, 'Unable to communicate with API.', res)
           } else {
-            const user = data
+            const user = data.data
 
             //Instantiate Variables
             const member  = guild.members.cache.get(servMessage ? servMessage.author.id : id),
@@ -90,10 +91,10 @@ module.exports = {
               else if (user.facility !== 'ZHQ') {
                 await axios.get(process.env.API_URL + 'facility/' + user.facility).then(facResult => {
                   const {status, data} = facResult
-                  if (status !== 200 || !data.hasOwnProperty('facility')) {
+                  if (status !== 200 || !data.data.hasOwnProperty('facility')) {
                     sendError(servMessage, MessageEmbed, 'Unable to determine region from API.', res)
                   } else {
-                    switch (parseInt(data.facility.info.region)) {
+                    switch (parseInt(data.data.facility.info.region)) {
                       case 4:
                         roles.push('Western Region')
                         break

@@ -35,10 +35,10 @@ module.exports = {
         .then(result => {
           const {status, data} = result
           if (status !== 200) {
-            sendError(servMessage, MessageEmbed, data.msg)
+            sendError(servMessage, MessageEmbed, data.data.msg)
           } else {
             //Check if Notices exist
-            if (Object.keys(data).length == 1 && data.hasOwnProperty('testing')) {
+            if (Object.keys(data.data).length == 1 && data.hasOwnProperty('testing')) {
               //No Active Notices
               const embed = new MessageEmbed()
               embed.setTitle('No Notices')
@@ -54,11 +54,11 @@ module.exports = {
             }
 
             //Add each Notice to an Embed
-            for (const notice in data) {
-              if (data.hasOwnProperty(notice)) {
-                if (data[notice]) {
-                  console.log(data[notice])
-                  const {tmu_facility_id, priority, message, expire_date, tmu_facility} = data[notice]
+            for (const notice in data.data) {
+              if (data.data.hasOwnProperty(notice)) {
+                if (data.data[notice]) {
+                  console.log(data.data[notice])
+                  const {tmu_facility_id, priority, message, expire_date, tmu_facility} = data.data[notice]
                   let color = 0x5cb85c
                   switch (priority) {
                     case 1:
