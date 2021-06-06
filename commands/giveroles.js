@@ -142,14 +142,14 @@ module.exports = {
               //Assign Nickname
               if (newNick !== member.nickname) {
                 nickChange = true
-                member.setNickname(newNick, 'Roles Synchronization').catch(e => {console.log(e)})
+                member.setNickname(newNick, 'Roles Synchronization').catch(e => console.log(e))
               }
               //Assign Roles
-              let roleStr = ''
+              let roleStr = '',
+                  excluded = ['Pilots', 'TMU', 'Trainers', 'Facilitators', 'Server Booster', 'VATNA/VATGOV', 'Muted', 'ATS-ZHQ', 'Social Media Team', 'Champion of Halloween']
               member.roles.cache.forEach(role => {
                 if (!role.permissions.has('ADMINISTRATOR') && role.id !== guild.roles.everyone.id
-                  && role.name !== 'Pilots' && role.name !== 'TMU'
-                && role.name !== 'Trainers' && role.name !== 'Facilitators')
+                  && excluded.indexOf(role.name) < 0)
                   member.roles.remove(role).catch(e => console.log(e))
               })
               for (let i = 0; i < roles.length; i++) {
