@@ -32,6 +32,8 @@ module.exports = {
             //Instantiate Variables
             const member  = guild.members.cache.get(servMessage ? servMessage.author.id : id),
                   ratings = {
+                    AFK: 'Inactive',
+                    SUS: 'Suspended',
                     OBS: 'Observer',
                     S1 : 'Student 1',
                     S2 : 'Student 2',
