@@ -148,7 +148,7 @@ module.exports = {
               }
               //Assign Roles
               let roleStr = '',
-                  excluded = ['Pilots', 'TMU', 'Trainers', 'Facilitators', 'Server Booster', 'VATNA/VATGOV', 'Muted', 'ATS-ZHQ', 'Social Media Team', 'Champion of Halloween']
+                  excluded = ['Pilots', 'Trainers', 'Server Booster', 'VATGOV', 'Muted', 'ATS-ZHQ', 'Social Media Team', 'Champion of Halloween']
               member.roles.cache.forEach(role => {
                 if (!role.permissions.has('ADMINISTRATOR') && role.id !== guild.roles.everyone.id
                   && excluded.indexOf(role.name) < 0)
