@@ -1,63 +1,57 @@
 /**
  * VATUSA Discord Bot
- * @author Blake Nahin <vatusa12@vatusa.net>
+ * @author Blake Nahin <b.nahin@vatusa.net>
  */
 
 //Initiate Environment Variables
 require('dotenv').config()
-const prefix      = process.env.PREFIX,
-      expressPort = process.env.SERVER_PORT,
+const expressPort = process.env.SERVER_PORT,
       mainURL     = process.env.MAIN_URL
 
 //Initiate Discord API and Express
-const {Client, Collection} = require('discord.js'),
-      client               = new Client(),
-      express              = require('express'),
-      app                  = express(),
-      cors                 = require('cors'),
-      corsOptions          = {
+const {Client, Collection, Intents} = require('discord.js'),
+      client                        = new Client({
+        intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES,
+          Intents.FLAGS.GUILD_MESSAGE_TYPING, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS]
+      }),
+      express                       = require('express'),
+      app                           = express(),
+      cors                          = require('cors'),
+      corsOptions                   = {
         origin              : mainURL,
         optionsSuccessStatus: 200,
         credentials         : true
       },
-      helmet               = require('helmet')
+      helmet                        = require('helmet')
 
 //Load Commands
 client.commands = new Collection()
 const fs = require('fs')
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'))
 for (const file of commandFiles) {
-  const command = require('./commands/' + file)
-  client.commands.set(command.name, command)
+  const command = require(`./commands/${file}`)
+  client.commands.set(command.data.name, command)
 }
 
-client.on('ready', () => {
+client.once('ready', () => {
   //Bot has logged in
   console.log(`Logged in as ${client.user.tag}!`)
 })
 
 //Message Listener
-client.on('message', message => {
-  if (!message.author.bot && message.mentions.users.first() && message.mentions.users.first().bot && (message.content.toLowerCase().startsWith('hi')
-    || message.content.toLowerCase().startsWith('hello') || message.content.toLowerCase().startsWith('howdy')
-    || message.content.toLowerCase().startsWith('hey')))
-    message.channel.send(`Heyyy ${message.author}`)
+client.on('interactionCreate', async interaction => {
+    if (!interaction.isCommand()) return //Skip if interaction is not a registered command
 
-  if (!message.content.startsWith(prefix)) return //Process messages that start with prefix
-
-  const args = message.content.slice(prefix.length).split(/ +/) //Explode rest of message into array
-  const command = args.shift().toLowerCase() //Get first entry of array
-
-  if (!client.commands.has(command)) return //No command exists
-
-  try {
-    client.commands.get(command).execute(message, args)
-  } catch (err) {
-    console.log(err)
-    message.reply('Unable to execute command. Blake broke something. ;(')
+    const command = client.commands.get(interaction.commandName)
+    if (!command) return //Command does not exist
+    try {
+      await command.execute(interaction)
+    } catch (err) {
+      console.error(err)
+      await interaction.reply({content: 'Unable to execute command. Blake broke something. ;('})
+    }
   }
-
-})
+)
 
 //Log in to Discord
 client.login(process.env.BOT_TOKEN)

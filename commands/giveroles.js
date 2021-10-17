@@ -1,13 +1,17 @@
+const {SlashCommandBuilder} = require('@discordjs/builders')
+
 module.exports = {
   name       : 'giveroles',
   description: 'Assign Roles from Linked Account',
-  execute (servMessage, id, res, g) {
+  data       : new SlashCommandBuilder()
+    .setName('giveroles')
+    .setDescription('Assign roles for channel access. Your Discord account must be linked on the VATUSA website.'),
+  execute (interaction, id, res, g) {
     //Initialize Vars
-    const {Client, MessageEmbed, Collection} = require('discord.js'),
-          client                             = new Client(),
-          axios                              = require('axios'),
-          https                              = require('https'),
-          guild                              = g ? g : servMessage.guild
+    const {MessageEmbed} = require('discord.js'),
+          axios          = require('axios'),
+          https          = require('https'),
+          guild          = g ? g : interaction.guild
 
     let req = axios
     //Check for dev API
@@ -20,17 +24,17 @@ module.exports = {
     }
 
     //Make the API Call to determine user information
-    req.get(process.env.API_URL + 'user/' + (servMessage ? servMessage.author.id : id) + '?d')
+    req.get(process.env.API_URL + 'user/' + (interaction ? interaction.member.id : id) + '?d')
       .then(result => {
-        console.log(result)
+          //console.log(result)
           const {status, data} = result
           if (status !== 200) {
-            sendError(servMessage, MessageEmbed, 'Unable to communicate with API.', res)
+            sendError(interaction, MessageEmbed, 'Unable to communicate with API.', res)
           } else {
             const user = data.data
 
             //Instantiate Variables
-            const member  = guild.members.cache.get(servMessage ? servMessage.author.id : id),
+            const member  = interaction ? interaction.member : guild.members.cache.get(id),
                   ratings = {
                     AFK: 'Inactive',
                     SUS: 'Suspended',
@@ -50,6 +54,10 @@ module.exports = {
                 newNick    = member.nickname,
                 nickChange = false
 
+            if (member.permissions.has('ADMINISTRATOR')) {
+              const ownerName = interaction.guild.members.cache.get(interaction.guild.ownerId).nickname
+              return sendError(interaction, MessageEmbed, `Since you have an administrator role, you must contact the Server Owner (${ownerName}) to receive your roles.`, res, false, 'Administrator Roles')
+            }
             //Determine Roles
             for (let i = 0; i < user.roles.length; i++) {
               //Roles Table
@@ -94,34 +102,32 @@ module.exports = {
                 await axios.get(process.env.API_URL + 'facility/' + user.facility).then(facResult => {
                   const {status, data} = facResult
                   if (status !== 200 || !data.data.hasOwnProperty('facility')) {
-                    sendError(servMessage, MessageEmbed, 'Unable to determine region from API.', res)
-                  } else {
-                    switch (parseInt(data.data.facility.info.region)) {
-                      case 4:
-                        roles.push('Western Region')
-                        break
-                      case 5:
-                        roles.push('South Central Region')
-                        break
-                      case 6:
-                        roles.push('Midwestern Region')
-                        break
-                      case 7:
-                        roles.push('Northeastern Region')
-                        break
-                      case 8:
-                        roles.push('Southeastern Region')
-                        break
-                    }
+                    return sendError(interaction, MessageEmbed, 'Unable to determine region from API.', res)
+                  }
+                  switch (parseInt(data.data.facility.info.region)) {
+                    case 4:
+                      roles.push('Western Region')
+                      break
+                    case 5:
+                      roles.push('South Central Region')
+                      break
+                    case 6:
+                      roles.push('Midwestern Region')
+                      break
+                    case 7:
+                      roles.push('Northeastern Region')
+                      break
+                    case 8:
+                      roles.push('Southeastern Region')
+                      break
                   }
                 }).catch(error => {
-                  console.log(error)
-                  sendError(servMessage, MessageEmbed, 'Unable to determine region from API.', res)
+                  console.error(error)
+                  return sendError(interaction, MessageEmbed, 'Unable to determine region from API.', res)
                 })
               }
             }
             determineRegion().then(() => {
-
               //Determine Rating
               roles.push(ratings[user.rating_short])
 
@@ -136,7 +142,7 @@ module.exports = {
                 } else if (facStaff !== false) {
                   newNick = `${user.fname} ${user.lname} | ${user.facility} ${facStaff}`
                   i = roles.length
-                } else if (!member.hasPermission('ADMINISTRATOR')) {
+                } else {
                   newNick = `${user.fname} ${user.lname} | ${user.facility} ${user.rating_short}`
                 }
               }
@@ -144,19 +150,19 @@ module.exports = {
               //Assign Nickname
               if (newNick !== member.nickname) {
                 nickChange = true
-                member.setNickname(newNick, 'Roles Synchronization').catch(e => console.log(e))
+                member.setNickname(newNick, 'Roles Synchronization').catch(e => console.error(e))
               }
               //Assign Roles
-              let roleStr = '',
+              let roleStr  = '',
                   excluded = ['Pilots', 'Trainers', 'Server Booster', 'VATGOV', 'Muted', 'ATS-ZHQ', 'Social Media Team', 'Champion of Halloween']
               member.roles.cache.forEach(role => {
-                if (!role.permissions.has('ADMINISTRATOR') && role.id !== guild.roles.everyone.id
+                if (role.id !== guild.roles.everyone.id
                   && excluded.indexOf(role.name) < 0)
-                  member.roles.remove(role).catch(e => console.log(e))
+                  member.roles.remove(role).catch(e => console.error(e))
               })
               for (let i = 0; i < roles.length; i++) {
                 const role = guild.roles.cache.find(role => role.name === roles[i])
-                member.roles.add(role).catch(e => console.log(e))
+                member.roles.add(role).catch(e => console.error(e))
                 roleStr += `${role} `
               }
               if (res)
@@ -175,21 +181,21 @@ module.exports = {
               embed.setFooter(nickChange ? `Your new nickname is: ${newNick}` : newNick)
 
               // Send the embed to the same channel as the message
-              servMessage.channel.send(embed)
+              interaction.reply({embeds: [embed]})
             })
           }
         }
       )
       .catch(error => {
-        console.log(error)
+        console.error(error)
         if (error.response.status === 404) {
-          sendError(servMessage, MessageEmbed, 'Your Discord account is not linked on VATUSA or you are not in the VATUSA database. Link it here: https://vatusa.net/my/profile', res, false, "Not Linked")
-        } else sendError(servMessage, MessageEmbed, error.data !== undefined ? error.data.toJSON() : 'Unable to communicate with API.', res)
+          sendError(interaction, MessageEmbed, 'Your Discord account is not linked on VATUSA or you are not in the VATUSA database. Link it here: https://vatusa.net/my/profile', res, false, 'Not Linked')
+        } else sendError(interaction, MessageEmbed, error.data !== undefined ? error.data.toJSON() : 'Unable to communicate with API.', res)
       })
   }
 }
 
-function sendError (messageObj, me, msg, res, footer = true, header = false) {
+function sendError (interaction, me, msg, res, footer = true, header = false) {
   if (res)
     return res.json({
       status: 'error',
@@ -205,5 +211,5 @@ function sendError (messageObj, me, msg, res, footer = true, header = false) {
 
   if (footer) embed.setFooter('Please try again later')
   // Send the embed to the same channel as the message
-  messageObj.channel.send(embed)
+  interaction.reply({embeds: [embed]})
 }
