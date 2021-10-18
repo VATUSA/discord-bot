@@ -1,7 +1,7 @@
 const {SlashCommandBuilder} = require('@discordjs/builders')
 
 module.exports = {
-  name       : 'giveroles',
+  name       : 'giveRoles',
   description: 'Assign Roles from Linked Account',
   data       : new SlashCommandBuilder()
     .setName('giveroles')

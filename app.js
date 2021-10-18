@@ -5,24 +5,13 @@
 
 //Initiate Environment Variables
 require('dotenv').config()
-const expressPort = process.env.SERVER_PORT,
-      mainURL     = process.env.MAIN_URL
 
 //Initiate Discord API and Express
 const {Client, Collection, Intents} = require('discord.js'),
       client                        = new Client({
         intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES,
           Intents.FLAGS.GUILD_MESSAGE_TYPING, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS]
-      }),
-      express                       = require('express'),
-      app                           = express(),
-      cors                          = require('cors'),
-      corsOptions                   = {
-        origin              : mainURL,
-        optionsSuccessStatus: 200,
-        credentials         : true
-      },
-      helmet                        = require('helmet')
+      })
 
 //Load Commands
 client.commands = new Collection()
@@ -33,44 +22,26 @@ for (const file of commandFiles) {
   client.commands.set(command.data.name, command)
 }
 
-client.once('ready', () => {
-  //Bot has logged in
-  console.log(`Logged in as ${client.user.tag}!`)
-})
+//Load Notifications
+client.notifications = new Collection()
+const notificationFiles = fs.readdirSync('./notifications').filter(file => file.endsWith('.js'))
+for (const file of notificationFiles) {
+  const notification = require(`./notifications/${file}`)
+  client.notifications.set(notification.name, notification)
+}
 
-//Message Listener
-client.on('interactionCreate', async interaction => {
-    if (!interaction.isCommand()) return //Skip if interaction is not a registered command
-
-    const command = client.commands.get(interaction.commandName)
-    if (!command) return //Command does not exist
-    try {
-      await command.execute(interaction)
-    } catch (err) {
-      console.error(err)
-      await interaction.reply({content: 'Unable to execute command. Blake broke something. ;('})
-    }
-  }
-)
+//Register Events
+const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'))
+for (const file of eventFiles) {
+  const event = require(`./events/${file}`)
+  if (event.once)
+    client.once(event.name, (...args) => event.execute(...args))
+  else
+    client.on(event.name, (...args) => event.execute(...args))
+}
 
 //Log in to Discord
 client.login(process.env.BOT_TOKEN)
 
-/** Server - Assign Roles **/
-app.use(helmet())
-  .options('*', cors(corsOptions))
-app.post('/assignRoles/:id', cors(corsOptions), (req, res) => {
-  const id = req.params.id
-  if (!client.guilds.cache.get(process.env.DISCORD_ID).members.cache.get(id))
-    return res.json({
-      status: 'error',
-      msg   : 'You are not a member of the VATUSA Official Discord. Join it using the link below the Assign Roles button.'
-    })
-  client.commands.get('giveroles').execute(null, id, res, client.guilds.cache.get(process.env.DISCORD_ID))
-})
-app.get('/*', (req, res) => {
-  res.send('Hello there. This is the VATUSA Discord Bot Server. If you are here, tell Blake the codeword: sharkbait.')
-})
-app.listen(expressPort, () => {
-  console.log(`Express listening on port ${expressPort}`)
-})
+//Start Server
+require('./server')(client)
