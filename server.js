@@ -11,19 +11,21 @@ exports = module.exports = function (client) {
           credentials         : true
         },
         membershipRequired = function (req, res, next) {
-          if (req.params.hasOwnProperty('id') && client.guilds.cache.get(process.env.GUILD_ID).members.cache.get(req.params.id))
-            next()
-          else
-            return res.json({
-              status: 'error',
-              msg   : 'You are not a member of the VATUSA Official Discord. Join it using the link below the Assign Roles button.'
-            })
+          client.guilds.fetch(process.env.GUILD_ID).then(_ => client.guilds.cache.get(process.env.GUILD_ID).members.fetch().then(_ => {
+            if (req.params.hasOwnProperty('id') && client.guilds.cache.get(process.env.GUILD_ID).members.cache.get(req.params.id))
+              next()
+            else
+              return res.json({
+                status: 'error',
+                msg   : 'You are not a member of the VATUSA Official Discord. Join it using the link below the Assign Roles button.'
+              })
+          }))
         }
 
   app.use(helmet())
     .use(express.json())
-//.options('*', cors(corsOptions))
-//.use(cors(corsOptions))
+    .options('*', cors(corsOptions))
+    .use(cors(corsOptions))
 
   app.post('/assignRoles/:id', membershipRequired, (req, res) => {
     client.commands.get('giveRoles').execute(null, req.params.id, res, client.guilds.cache.get(process.env.GUILD_ID))
