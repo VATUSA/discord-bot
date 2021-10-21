@@ -13,7 +13,7 @@ const {Client, Collection, Intents} = require('discord.js'),
           Intents.FLAGS.GUILD_MESSAGE_TYPING, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS],
         partials: ['CHANNEL']
       }),
-      helpers                       = require('./helpers.js')
+      helpers                       = require('./util.js')
 
 //Load Commands
 client.commands = new Collection()

@@ -23,7 +23,7 @@ module.exports = {
       if (studentId && client.users.cache.get(studentId) !== undefined)
         client.users.cache.get(studentId).send({
           embeds    : [new MessageEmbed()
-            .setColor(0x5cb85c)
+            .setColor("#0996b1")
             .setTitle('Legacy Exam Assigned')
             .setDescription(studentContent)
             .setFooter('VATSIM: VATUSA Division', 'https://www.vatusa.net/img/icon-fullcolor-discord-embed.png')
@@ -36,7 +36,7 @@ module.exports = {
       if (staffId && client.users.cache.get(staffId) !== undefined) {
         client.users.cache.get(staffId).send({
           embeds: [new MessageEmbed()
-            .setColor(0x5cb85c)
+            .setColor("#0996b1")
             .setTitle('Legacy Exam Assigned')
             .setDescription(staffContent)
             .addFields(
@@ -52,7 +52,7 @@ module.exports = {
       if (guildId && channelId && client.guilds.cache.get(guildId) !== undefined && client.guilds.cache.get(guildId).channels.cache.get(channelId) !== undefined) {
         client.guilds.cache.get(guildId).channels.cache.get(channelId).send({
           embeds: [new MessageEmbed()
-            .setColor(0x5cb85c)
+            .setColor("#0996b1")
             .setTitle('Legacy Exam Assigned')
             .setDescription(staffContent)
             .addFields(

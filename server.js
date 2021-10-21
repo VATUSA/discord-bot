@@ -42,7 +42,6 @@ exports = module.exports = function (client) {
     if (['channel', 'dm'].indexOf(req.params.medium) < 0)
       return res.sendStatus(400)
     if (client.notifications.get(req.params.type) !== undefined) {
-      console.log(req)
       client.notifications.get(req.params.type).execute(client, req.body.json, req.params.medium)
       return res.sendStatus(200)
     }
