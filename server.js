@@ -5,6 +5,7 @@ exports = module.exports = function (client) {
         expressPort        = process.env.SERVER_PORT,
         mainURL            = process.env.MAIN_URL,
         cors               = require('cors'),
+        jwt                = require('express-jwt'),
         corsOptions        = {
           origin              : mainURL,
           optionsSuccessStatus: 200,
@@ -25,6 +26,12 @@ exports = module.exports = function (client) {
     .use(express.json())
     .options('*', cors(corsOptions))
     .use(cors(corsOptions))
+    .use(jwt({
+      secret    : process.env.BOT_SECRET,
+      algorithms: ['HS512'],
+      audience  : process.env.MAIN_URL,
+      issuer    : process.env.JWT_ISSUER
+    }))
 
   app.post('/assignRoles/:id', membershipRequired, (req, res) => {
     client.commands.get('giveRoles').execute(null, req.params.id, res, client.guilds.cache.get(process.env.GUILD_ID))
@@ -35,7 +42,8 @@ exports = module.exports = function (client) {
     if (['channel', 'dm'].indexOf(req.params.medium) < 0)
       return res.sendStatus(400)
     if (client.notifications.get(req.params.type) !== undefined) {
-      client.notifications.get(req.params.type).execute(client, req.body, req.params.medium)
+      console.log(req)
+      client.notifications.get(req.params.type).execute(client, req.body.json, req.params.medium)
       return res.sendStatus(200)
     }
     return res.sendStatus(404)
