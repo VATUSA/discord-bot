@@ -12,7 +12,8 @@ const {Client, Collection, Intents} = require('discord.js'),
         intents : [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES,
           Intents.FLAGS.GUILD_MESSAGE_TYPING, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS],
         partials: ['CHANNEL']
-      })
+      }),
+      helpers                       = require('./helpers.js')
 
 //Load Commands
 client.commands = new Collection()
@@ -42,7 +43,11 @@ for (const file of eventFiles) {
 }
 
 //Log in to Discord
-client.login(process.env.BOT_TOKEN)
+client.login(process.env.BOT_TOKEN).then(_ => {
+  //Fetch Guilds and Members
+  helpers.fetch(client)
+  setInterval(_ => helpers.fetch(client), 60 * 10 * 1000) //Fetch every 10 minutes
+})
 
 //Start Server
 require('./server')(client)

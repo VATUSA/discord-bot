@@ -11,15 +11,14 @@ exports = module.exports = function (client) {
           credentials         : true
         },
         membershipRequired = function (req, res, next) {
-          client.guilds.fetch(process.env.GUILD_ID).then(_ => client.guilds.cache.get(process.env.GUILD_ID).members.fetch().then(_ => {
-            if (req.params.hasOwnProperty('id') && client.guilds.cache.get(process.env.GUILD_ID).members.cache.get(req.params.id))
-              next()
-            else
-              return res.json({
-                status: 'error',
-                msg   : 'You are not a member of the VATUSA Official Discord. Join it using the link below the Assign Roles button.'
-              })
-          }))
+          //Fetch Guilds and Members
+          if (req.params.hasOwnProperty('id') && client.guilds.cache.get(process.env.GUILD_ID).members.cache.get(req.params.id) !== undefined)
+            next()
+          else
+            return res.json({
+              status: 'error',
+              msg   : 'You are not a member of the VATUSA Official Discord. Join it using the link below the Assign Roles button.'
+            })
         }
 
   app.use(helmet())
@@ -32,9 +31,43 @@ exports = module.exports = function (client) {
   })
 
   /** *** Notifications *** **/
-  app.post('/notifications/legacyExamAssigned', (req, res) => {
-    client.notifications.get('legacyExamAssigned').execute(client, req.body)
-    res.sendStatus(200)
+  app.post('/notifications/:medium/:type', (req, res) => {
+    if (['channel', 'dm'].indexOf(req.params.medium) < 0)
+      return res.sendStatus(400)
+    if (client.notifications.get(req.params.type) !== undefined) {
+      client.notifications.get(req.params.type).execute(client, req.body, req.params.medium)
+      return res.sendStatus(200)
+    }
+    return res.sendStatus(404)
+  })
+
+  app.get('/guilds/:id?', (req, res) => {
+    let guilds = []
+    client.guilds.cache.filter(g => {
+      if (req.params.hasOwnProperty('id') && req.params.id !== undefined) {
+        const member = g.members.cache.get(req.params.id)
+        return member !== undefined && member.permissions.has('ADMINISTRATOR')
+      }
+      return true
+    }).forEach(g => {
+      guilds.push({id: g.id, name: g.name})
+    })
+    return res.json(guilds)
+  })
+  app.get('/guild/:id/channels', (req, res) => {
+    let channels = []
+    if (client.guilds.cache.get(req.params.id) === undefined) return res.sendStatus(404)
+    client.guilds.cache.get(req.params.id).channels.cache.filter(c => c.type === 'GUILD_TEXT').forEach(c => {
+      channels.push({
+        id        : c.id,
+        name      : c.name,
+        parentId  : c.parentId,
+        parentName: c.parentId ? c.guild.channels.cache.get(c.parentId).name : null,
+        position  : c.rawPosition
+      })
+    })
+
+    return res.json(channels.sort((a, b) => a.position - b.position))
   })
 
   app.get('/*', (req, res) => {
