@@ -6,7 +6,7 @@ module.exports = {
   data       : new SlashCommandBuilder()
     .setName('giveroles')
     .setDescription('Assign roles for channel access. Your Discord account must be linked on the VATUSA website.'),
-  execute (interaction, id, res, g) {
+  async execute (interaction, id, res, g) {
     //Initialize Vars
     const {MessageEmbed} = require('discord.js'),
           axios          = require('axios'),
@@ -127,7 +127,7 @@ module.exports = {
                 })
               }
             }
-            determineRegion().then(() => {
+            determineRegion().then(async () => {
               //Determine Rating
               roles.push(ratings[user.rating_short])
 
@@ -155,14 +155,14 @@ module.exports = {
               //Assign Roles
               let roleStr  = '',
                   excluded = ['Pilots', 'Trainers', 'Server Booster', 'VATGOV', 'Muted', 'ATS-ZHQ', 'Social Media Team', 'Champion of Halloween']
-              member.roles.cache.forEach(role => {
+              for (const role of member.roles.cache) {
                 if (role.id !== guild.roles.everyone.id
                   && excluded.indexOf(role.name) < 0)
-                  member.roles.remove(role).catch(e => console.error(e))
-              })
+                  await member.roles.remove(role).catch(e => console.error(e))
+              }
               for (let i = 0; i < roles.length; i++) {
                 const role = guild.roles.cache.find(role => role.name === roles[i])
-                member.roles.add(role).catch(e => console.error(e))
+                await member.roles.add(role).catch(e => console.error(e))
                 roleStr += `${role} `
               }
               if (res)
@@ -181,7 +181,7 @@ module.exports = {
               embed.setFooter(nickChange ? `Your new nickname is: ${newNick}` : newNick)
 
               // Send the embed to the same channel as the message
-              interaction.reply({embeds: [embed]})
+              return interaction.reply({embeds: [embed]})
             })
           }
         }
@@ -189,8 +189,8 @@ module.exports = {
       .catch(error => {
         console.error(error)
         if (error.response.status === 404) {
-          sendError(interaction, MessageEmbed, 'Your Discord account is not linked on VATUSA or you are not in the VATUSA database. Link it here: https://vatusa.net/my/profile', res, false, 'Not Linked')
-        } else sendError(interaction, MessageEmbed, error.data !== undefined ? error.data.toJSON() : 'Unable to communicate with API.', res)
+          return sendError(interaction, MessageEmbed, 'Your Discord account is not linked on VATUSA or you are not in the VATUSA database. Link it here: https://vatusa.net/my/profile', res, false, 'Not Linked')
+        } else return sendError(interaction, MessageEmbed, error.data !== undefined ? error.data.toJSON() : 'Unable to communicate with API.', res)
       })
   }
 }
@@ -211,5 +211,5 @@ function sendError (interaction, me, msg, res, footer = true, header = false) {
 
   if (footer) embed.setFooter('Please try again later')
   // Send the embed to the same channel as the message
-  interaction.reply({embeds: [embed]})
+  return interaction.reply({embeds: [embed]})
 }

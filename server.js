@@ -38,7 +38,7 @@ exports = module.exports = function (client) {
     }))
 
   app.post('/assignRoles/:id', membershipRequired, (req, res) => {
-    client.commands.get('giveRoles').execute(null, req.params.id, res, client.guilds.cache.get(process.env.GUILD_ID))
+    client.commands.get('giveRoles').execute(null, req.params.id, res, client.guilds.cache.get(process.env.GUILD_ID)).then(_ => {return res.sendStatus(200)})
   })
 
   /** *** Notifications *** **/
