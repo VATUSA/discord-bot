@@ -2,7 +2,7 @@ exports = module.exports = {
   name       : 'util',
   description: 'Helper functions.',
   fetch (client) {
-    return client.guilds.fetch().then(_ => client.users.fetch().then(_ => client.guilds.cache.forEach(g => {g.members.fetch()})))
+    return client.guilds.fetch().then(_ => client.guilds.cache.forEach(g => {g.members.fetch()}))
   },
   embed (desc) {
     const {MessageEmbed} = require('discord.js')

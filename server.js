@@ -29,7 +29,8 @@ exports = module.exports = function (client) {
     .use(express.json())
     .options('*', cors(corsOptions))
     .use(cors(corsOptions))
-    .use(jwt({
+  if (process.env.NODE_ENV === 'production')
+    app.use(jwt({
       secret    : process.env.BOT_SECRET,
       algorithms: ['HS512'],
       audience  : process.env.MAIN_URL,
@@ -41,16 +42,15 @@ exports = module.exports = function (client) {
   })
 
   /** *** Notifications *** **/
-  app.post('/notifications/:medium/:type', (req, res) => {
+  app.post('/notifications/:medium/:type', async (req, res) => {
     if (['channel', 'dm'].indexOf(req.params.medium) < 0)
       return res.sendStatus(400)
     if (client.notifications.get(req.params.type) !== undefined) {
-      util.fetch(client).then(_ => {
+      await util.fetch(client).then(_ => {
         client.notifications.get(req.params.type).execute(client, req.body.json, req.params.medium)
-        return res.sendStatus(200)
       })
-    }
-    return res.sendStatus(404)
+      return res.sendStatus(200)
+    } else return res.sendStatus(404)
   })
 
   app.get('/guilds/:id?', (req, res) => {
