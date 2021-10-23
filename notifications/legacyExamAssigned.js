@@ -14,7 +14,7 @@ module.exports = {
           guildId                                         = data.guildId,
           channelId                                       = data.channelId,
           {MessageEmbed, MessageActionRow, MessageButton} = require('discord.js'),
-          {italic}                                        = require('@discordjs/builders'),
+          {italic, time}                                  = require('@discordjs/builders'),
           util                                            = require('../util')
 
     //Fetch Users
@@ -26,7 +26,7 @@ module.exports = {
     }
 
     if (medium === 'dm') {
-      let studentContent = `You have been assigned the Legacy exam ${italic(examName)} by instructor ${instructorName}. You have until ${endDate} UTC to complete the examination before it expires.`
+      let studentContent = `You have been assigned the Legacy exam ${italic(examName)} by instructor ${instructorName}. You have until ${time(new Date(endDate + ' UTC'), 'f')} to complete the examination before it expires.`
       if (cbtRequired)
         studentContent += `\n\n Before attempting the exam, you must complete ${cbtFacility}'s ${cbtBlock} CBT course by visiting https://www.vatusa.net/cbt/${cbtFacility}`
       if (studentId && client.users.cache.get(studentId) !== undefined)
