@@ -51,3 +51,4 @@ client.login(process.env.BOT_TOKEN).then(_ => {
 
 //Start Server
 require('./server')(client)
+

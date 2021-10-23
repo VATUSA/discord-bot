@@ -11,15 +11,18 @@ exports = module.exports = function (client) {
           optionsSuccessStatus: 200,
           credentials         : true
         },
+        util               = require('./util'),
         membershipRequired = function (req, res, next) {
-          //Fetch Guilds and Members
-          if (req.params.hasOwnProperty('id') && client.guilds.cache.get(process.env.GUILD_ID).members.cache.get(req.params.id) !== undefined)
-            next()
-          else
-            return res.json({
-              status: 'error',
-              msg   : 'You are not a member of the VATUSA Official Discord. Join it using the link below the Assign Roles button.'
-            })
+          util.fetch(client).then(_ => {
+            //Fetch Guilds and Members
+            if (req.params.hasOwnProperty('id') && client.guilds.cache.get(process.env.GUILD_ID).members.cache.get(req.params.id) !== undefined)
+              next()
+            else
+              return res.json({
+                status: 'error',
+                msg   : 'You are not a member of the VATUSA Official Discord. Join it using the link below the Assign Roles button.'
+              })
+          })
         }
 
   app.use(helmet())
@@ -42,8 +45,10 @@ exports = module.exports = function (client) {
     if (['channel', 'dm'].indexOf(req.params.medium) < 0)
       return res.sendStatus(400)
     if (client.notifications.get(req.params.type) !== undefined) {
-      client.notifications.get(req.params.type).execute(client, req.body.json, req.params.medium)
-      return res.sendStatus(200)
+      util.fetch(client).then(_ => {
+        client.notifications.get(req.params.type).execute(client, req.body.json, req.params.medium)
+        return res.sendStatus(200)
+      })
     }
     return res.sendStatus(404)
   })
