@@ -14,5 +14,23 @@ exports = module.exports = {
   singleButtonLink (title, href) {
     const {MessageActionRow, MessageButton} = require('discord.js')
     return new MessageActionRow().addComponents(new MessageButton().setStyle('LINK').setLabel(title).setURL(href))
+  },
+  readDirSyncRecursive (dir, jsOnly = false) {
+    const fs = require('fs'),
+          p  = require('path')
+    let list = []
+
+    fs.readdirSync(dir).forEach(file => {
+      const path = p.join(dir, file)
+      if (fs.lstatSync(path).isDirectory()) {
+        list = list.concat(this.readDirSyncRecursive(path, jsOnly))
+      } else {
+        if (jsOnly && !path.endsWith('.js')) return
+        list.push(path)
+      }
+    })
+
+    return list
   }
+
 }

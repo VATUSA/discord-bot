@@ -15,7 +15,7 @@ module.exports = {
           guildId                   = data.guildId,
           channelId                 = data.channelId,
           {italic, bold, hyperlink} = require('@discordjs/builders'),
-          util                      = require('../util')
+          util                      = require('../../util')
 
     //Fetch Users
     if (studentId) {

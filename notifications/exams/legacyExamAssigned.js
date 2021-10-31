@@ -13,9 +13,8 @@ module.exports = {
           staffId                                         = data.staff_id,
           guildId                                         = data.guildId,
           channelId                                       = data.channelId,
-          {MessageEmbed, MessageActionRow, MessageButton} = require('discord.js'),
           {italic, time}                                  = require('@discordjs/builders'),
-          util                                            = require('../util')
+          util                                            = require('../../util')
 
     //Fetch Users
     if (studentId) {

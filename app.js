@@ -13,7 +13,7 @@ const {Client, Collection, Intents} = require('discord.js'),
           Intents.FLAGS.GUILD_MESSAGE_TYPING, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS],
         partials: ['CHANNEL']
       }),
-      helpers                       = require('./util.js')
+      util                       = require('./util.js')
 
 //Load Commands
 client.commands = new Collection()
@@ -26,9 +26,9 @@ for (const file of commandFiles) {
 
 //Load Notifications
 client.notifications = new Collection()
-const notificationFiles = fs.readdirSync('./notifications').filter(file => file.endsWith('.js'))
+const notificationFiles = util.readDirSyncRecursive('./notifications', true)
 for (const file of notificationFiles) {
-  const notification = require(`./notifications/${file}`)
+  const notification = require(`./${file}`)
   client.notifications.set(notification.name, notification)
 }
 
@@ -45,8 +45,8 @@ for (const file of eventFiles) {
 //Log in to Discord
 client.login(process.env.BOT_TOKEN).then(_ => {
   //Fetch Guilds and Members
-  helpers.fetch(client)
-  setInterval(_ => helpers.fetch(client), 60 * 10 * 1000) //Fetch every 10 minutes
+  util.fetch(client)
+  setInterval(_ => util.fetch(client), 60 * 10 * 1000) //Fetch every 10 minutes
 })
 
 //Start Server

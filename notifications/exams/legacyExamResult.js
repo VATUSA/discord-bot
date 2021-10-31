@@ -1,5 +1,3 @@
-const util = require('../util')
-const {time} = require('@discordjs/builders')
 exports = module.exports = {
   name       : 'legacyExamResult',
   description: 'Legacy exam result.',
@@ -20,7 +18,7 @@ exports = module.exports = {
           guildId              = data.guildId,
           channelId            = data.channelId,
           {italic, bold, time} = require('@discordjs/builders'),
-          util                 = require('../util'),
+          util                 = require('../../util'),
           title                = passed ? 'Exam Passed' : 'Exam Failed',
           color                = passed ? '#04ba4a' : '#ff0000'
 
