@@ -4,6 +4,23 @@ exports = module.exports = {
   fetch (client) {
     return client.guilds.fetch().then(_ => client.guilds.cache.forEach(g => {g.members.fetch()}))
   },
+  async fetchUser (client, id) {
+    let user
+    try {
+      await client.users.fetch(id).then(u => {
+        user = u
+      })
+    } catch (DiscordAPIError) {
+      return null
+    }
+
+    return user
+  },
+  fetchChannelCache (client, guildId, channelId) {
+    if (guildId && channelId && client.guilds.cache.get(guildId) !== undefined && client.guilds.cache.get(guildId).channels.cache.get(channelId) !== undefined)
+      return client.guilds.cache.get(guildId).channels.cache.get(channelId)
+    return null
+  },
   embed (desc) {
     const {MessageEmbed} = require('discord.js')
     return new MessageEmbed()

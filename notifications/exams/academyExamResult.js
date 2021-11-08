@@ -18,16 +18,21 @@ module.exports = {
           util                      = require('../../util')
 
     //Fetch Users
-    if (studentId) {
-      await client.users.fetch(studentId)
-    }
-    if (instructorId) {
-      await client.users.fetch(instructorId)
-    }
+    const student    = await util.fetchUser(client, studentId),
+          instructor = await util.fetchUser(client, instructorId)
 
     const color        = passed ? '#00ff00' : '#ff0000',
           title        = passed ? 'Academy Exam Passed' : 'Academy Exam Failed',
-          staffContent = `${bold(studentName)} has ${passed ? 'passed' : 'failed'} their academy exam.`
+          staffContent = `${bold(studentName)} has ${passed ? 'passed' : 'failed'} their academy exam.`,
+          staffEmbed   = util.embed(staffContent)
+            .setColor(color)
+            .setTitle(title)
+            .addFields(
+              {name: 'Exam', value: examName, inline: true},
+              {name: 'Score', value: `${grade}%`, inline: true},
+              {name: 'Attempt', value: String(attemptNum), inline: true},
+              {name: 'Instructor', value: instructorName})
+
     if (medium === 'dm') {
       let studentContent = passed ? `Congratulations! You have passed your ${italic(examName)} exam.` : `Unfortunately, you have failed your ${italic(examName)} exam.`
 
@@ -39,42 +44,26 @@ module.exports = {
         or the ${hyperlink('VATUSA Website', 'https://www.vatusa.devel/help/ticket/new')}.`
       } else studentContent += `\n\nYou will not receive a promotion to the new rating until you have passed an OTS 
       (Over-the-shoulder practical exam) conducted by your ARTCC's training staff.`
-      if (studentId && client.users.cache.get(studentId) !== undefined)
-        return client.users.cache.get(studentId).send({
+      if (student)
+        student.send({
           embeds    : [util.embed(studentContent)
             .setColor(color)
             .setTitle(title)
-            .setFields({title: 'Score', value: `${grade}%`, inline: true},
-              {title: 'Attempt', value: attemptNum, inline: true})],
+            .addFields({name: 'Score', value: `${grade}%`, inline: true},
+              {name: 'Attempt', value: String(attemptNum), inline: true})],
           components: [util.singleButtonLink('View Attempt', `https://academy.vatusa.net/mod/quiz/review.php?attempt=${attemptId}`)]
         })
-      if (instructorId && client.users.cache.get(instructorId) !== undefined) {
-        return client.users.cache.get(instructorId).send({
-          embeds    : [util.embed(staffContent)
-            .setColor(color)
-            .setTitle(title)
-            .addFields(
-              {name: 'Exam', value: examName, inline: true},
-              {name: 'Score', value: `${grade}%`, inline: true},
-              {name: 'Attempt', value: attemptNum, inline: true},
-              {name: 'Instructor', value: instructorName})
-          ],
+      if (instructor) {
+        instructor.send({
+          embeds    : [staffEmbed],
           components: [util.singleButtonLink('View Attempt', `https://academy.vatusa.net/mod/quiz/review.php?attempt=${attemptId}`)]
         })
       }
     } else if (medium === 'channel') {
-      if (guildId && channelId && client.guild.cache.get(guildId) !== undefined
-        && client.guild.cache.get(guildId).channels.cache.get(channelId) !== undefined) {
-        return client.guild.cache.get(guildId).channels.cache.get(channelId).send({
-          embeds    : [util.embed(staffContent)
-            .setColor(color)
-            .setTitle(title)
-            .addFields(
-              {name: 'Exam', value: examName, inline: true},
-              {name: 'Score', value: `${grade}%`, inline: true},
-              {name: 'Attempt', value: attemptNum, inline: true},
-              {name: 'Instructor', value: instructorName})
-          ],
+      const channel = util.fetchChannelCache(client, guildId, channelId)
+      if (channel) {
+        channel.send({
+          embeds    : [staffEmbed],
           components: [util.singleButtonLink('View Attempt', `https://academy.vatusa.net/mod/quiz/review.php?attempt=${attemptId}`)]
         })
       }
