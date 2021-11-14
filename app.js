@@ -13,7 +13,7 @@ const {Client, Collection, Intents} = require('discord.js'),
           Intents.FLAGS.GUILD_MESSAGE_TYPING, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS],
         partials: ['CHANNEL']
       }),
-      util                       = require('./util.js')
+      util                          = require('./util.js')
 
 //Load Commands
 client.commands = new Collection()
@@ -43,12 +43,10 @@ for (const file of eventFiles) {
 }
 
 //Log in to Discord
-client.login(process.env.BOT_TOKEN).then(_ => {
-  //Fetch Guilds and Members
-  util.fetch(client)
-  setInterval(_ => util.fetch(client), 60 * 10 * 1000) //Fetch every 10 minutes
-})
-
+client.login(process.env.BOT_TOKEN).then(() => {
 //Start Server
-require('./server')(client)
+  require('./server')(client)
+}).catch(err => {
+  console.error(err)
+})
 

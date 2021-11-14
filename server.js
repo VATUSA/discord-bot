@@ -13,15 +13,17 @@ exports = module.exports = function (client) {
         },
         util               = require('./util'),
         membershipRequired = function (req, res, next) {
+          if (req.params.hasOwnProperty('id') && client.guilds.cache.get(process.env.GUILD_ID).members.cache.get(req.params.id) !== undefined)
+            next()
+          else
+            return res.json({
+              status: 'error',
+              msg   : 'You are not a member of the VATUSA Official Discord. Join it using the link below the Assign Roles button.'
+            })
+        },
+        fetchRequired      = function (req, res, next) {
           util.fetch(client).then(_ => {
-            //Fetch Guilds and Members
-            if (req.params.hasOwnProperty('id') && client.guilds.cache.get(process.env.GUILD_ID).members.cache.get(req.params.id) !== undefined)
-              next()
-            else
-              return res.json({
-                status: 'error',
-                msg   : 'You are not a member of the VATUSA Official Discord. Join it using the link below the Assign Roles button.'
-              })
+            next()
           })
         }
 
@@ -37,23 +39,22 @@ exports = module.exports = function (client) {
       issuer    : process.env.JWT_ISSUER
     }))
 
-  app.post('/assignRoles/:id', membershipRequired, (req, res) => {
+  app.post('/assignRoles/:id', [fetchRequired, membershipRequired], (req, res) => {
     client.commands.get('giveRoles').execute(null, req.params.id, res, client.guilds.cache.get(process.env.GUILD_ID)).then(_ => {return res.sendStatus(200)})
   })
 
   /** *** Notifications *** **/
-  app.post('/notifications/:medium/:type', async (req, res) => {
+  app.post('/notifications/:medium/:type', fetchRequired, (req, res) => {
     if (['channel', 'dm'].indexOf(req.params.medium) < 0)
       return res.sendStatus(400)
     if (client.notifications.get(req.params.type) !== undefined) {
-      await util.fetch(client).then(_ => {
-        client.notifications.get(req.params.type).execute(client, req.body.json, req.params.medium)
-      })
+      client.notifications.get(req.params.type).execute(client, req.body.json, req.params.medium)
       return res.sendStatus(200)
-    } else return res.sendStatus(404)
+    }
+    return res.sendStatus(404)
   })
 
-  app.get('/guilds/:id?', (req, res) => {
+  app.get('/guilds/:id?', fetchRequired, (req, res) => {
     let guilds = []
     client.guilds.cache.filter(g => {
       if (req.params.hasOwnProperty('id') && req.params.id !== undefined) {
@@ -66,7 +67,8 @@ exports = module.exports = function (client) {
     })
     return res.json(guilds)
   })
-  app.get('/guild/:id/channels', (req, res) => {
+
+  app.get('/guild/:id/channels', fetchRequired, (req, res) => {
     let channels = []
     if (client.guilds.cache.get(req.params.id) === undefined) return res.sendStatus(404)
     client.guilds.cache.get(req.params.id).channels.cache.filter(c => c.type === 'GUILD_TEXT').forEach(c => {

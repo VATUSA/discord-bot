@@ -1,4 +1,3 @@
-const {time} = require('@discordjs/builders')
 module.exports = {
   name       : 'legacyExamAssigned',
   description: 'Legacy exam assigned.',
