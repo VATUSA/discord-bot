@@ -1,4 +1,5 @@
 const {SlashCommandBuilder} = require('@discordjs/builders')
+const {MessageEmbed} = require('discord.js')
 
 module.exports = {
   name       : 'giveroles',
@@ -62,10 +63,14 @@ module.exports = {
             for (let i = 0; i < user.roles.length; i++) {
               //Roles Table
               const role = user.roles[i]
-              if (role.role.match(/US\d+/))
-                roles.push('VATUSA Staff')
-              if (role.role === 'USWT')
-                roles.push('Web Team')
+              if (role.role.match(/US\d+/)) {
+                const ownerName = interaction.guild.members.cache.get(interaction.guild.ownerId).nickname
+                return sendError(interaction, MessageEmbed, `Since you have an administrator role, you must contact the Server Owner (${ownerName}) to receive your roles.`, res, false, 'Administrator Roles')
+              }
+              if (role.role === 'USWT') {
+                const ownerName = interaction.guild.members.cache.get(interaction.guild.ownerId).nickname
+                return sendError(interaction, MessageEmbed, `Since you have an administrator role, you must contact the Server Owner (${ownerName}) to receive your roles.`, res, false, 'Administrator Roles')
+              }
               if (role.role === 'ACE')
                 roles.push('ACE Team')
               if (role.role === 'ATM') {
@@ -160,7 +165,8 @@ module.exports = {
                   excluded = ['Pilots', 'Trainers', 'Server Booster', 'VATGOV', 'Muted', 'ATS-ZHQ', 'Social Media Team', 'Champion of Halloween']
               member.roles.cache.forEach(role => {
                 if (role.id !== guild.roles.everyone.id
-                  && excluded.indexOf(role.name) < 0)
+                  && excluded.indexOf(role.name) < 0
+                  && roles.indexOf(role.name) < 0)
                   member.roles.remove(role).catch(e => console.error(e))
               })
               for (let i = 0; i < roles.length; i++) {
