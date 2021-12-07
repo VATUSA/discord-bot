@@ -21,7 +21,7 @@ const fs = require('fs')
 const commandFiles = util.readDirSyncRecursive('./commands', true)
 for (const file of commandFiles) {
   const command = require(`./${file}`)
-  client.commands.set(command.data.name, command)
+  client.commands.set(command.name, command)
 }
 
 //Load Notifications

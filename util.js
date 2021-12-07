@@ -1,8 +1,8 @@
 exports = module.exports = {
   name       : 'util',
   description: 'Helper functions.',
-  fetch (client) {
-    return client.guilds.fetch().then(_ => client.guilds.cache.forEach(g => {g.members.fetch()}))
+  fetch (client, callback) {
+    return client.guilds.fetch().then(_ => client.guilds.cache.forEach(g => {g.members.fetch().then(callback)}))
   },
   async fetchUser (client, id) {
     let user
@@ -80,6 +80,8 @@ exports = module.exports = {
     const axios  = require('axios'),
           moment = require('moment'),
           iss    = moment(),
+          jwt    = require('jsonwebtoken'),
+          https  = require('https'),
           token  = jwt.sign({
             iat: iss.unix(),
             iss: process.env.MAIN_URL,

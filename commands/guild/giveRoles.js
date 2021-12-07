@@ -17,7 +17,7 @@ module.exports = {
 
     //Make the API Call to determine user information
     http.get('user/' + (interaction ? interaction.member.id : id) + '?d')
-      .then(result => {
+      .then(async result => {
           //console.log(result)
           const {status, data} = result
           if (status !== 200) {
@@ -54,10 +54,16 @@ module.exports = {
             for (let i = 0; i < user.roles.length; i++) {
               //Roles Table
               const role = user.roles[i]
-              if (role.role.match(/US\d+/))
+              if (role.role.match(/US\d+/)) {
                 roles.push('VATUSA Staff')
-              if (role.role === 'USWT')
+                const ownerName = interaction.guild.members.cache.get(interaction.guild.ownerId).nickname
+                return util.sendError(interaction, `Since you have an administrator role, you must contact the Server Owner (${ownerName}) to receive your roles.`, res, false, 'Administrator Roles')
+              }
+              if (role.role === 'USWT') {
                 roles.push('Web Team')
+                const ownerName = interaction.guild.members.cache.get(interaction.guild.ownerId).nickname
+                return util.sendError(interaction, `Since you have an administrator role, you must contact the Server Owner (${ownerName}) to receive your roles.`, res, false, 'Administrator Roles')
+              }
               if (role.role === 'ACE')
                 roles.push('ACE Team')
               if (role.role === 'ATM') {
@@ -147,14 +153,15 @@ module.exports = {
               //Assign Roles
               let roleStr  = '',
                   excluded = ['Pilots', 'Trainers', 'Server Booster', 'VATGOV', 'Muted', 'ATS-ZHQ', 'Social Media Team', 'Champion of Halloween']
-              for (const role of member.roles.cache) {
+              member.roles.cache.forEach(role => {
                 if (role.id !== guild.roles.everyone.id
-                  && excluded.indexOf(role.name) < 0)
-                  await member.roles.remove(role).catch(e => console.error(e))
-              }
+                  && excluded.indexOf(role.name) < 0
+                  && roles.indexOf(role.name) < 0)
+                  member.roles.remove(role).catch(e => console.error(e))
+              })
               for (let i = 0; i < roles.length; i++) {
                 const role = guild.roles.cache.find(role => role.name === roles[i])
-                await member.roles.add(role).catch(e => console.error(e))
+                member.roles.add(role).catch(e => console.error(e))
                 roleStr += `${role} `
               }
               if (res)

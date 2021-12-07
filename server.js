@@ -22,9 +22,7 @@ exports = module.exports = function (client) {
             })
         },
         fetchRequired      = function (req, res, next) {
-          util.fetch(client).then(_ => {
-            next()
-          })
+          util.fetch(client, next)
         }
 
   app.use(helmet())
