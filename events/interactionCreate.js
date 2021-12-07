@@ -2,7 +2,7 @@ module.exports = {
   name       : 'interactionCreate',
   description: 'Slash command used.',
   async execute (interaction) {
-    if (!interaction.isCommand()) return //Skip if interaction is not a registered command
+    if (!interaction.isCommand() && !interaction.isButton()) return //Skip if interaction is not a registered command
 
     const client  = interaction.client,
           command = client.commands.get(interaction.commandName)

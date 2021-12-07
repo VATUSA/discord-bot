@@ -18,9 +18,9 @@ const {Client, Collection, Intents} = require('discord.js'),
 //Load Commands
 client.commands = new Collection()
 const fs = require('fs')
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'))
+const commandFiles = util.readDirSyncRecursive('./commands', true)
 for (const file of commandFiles) {
-  const command = require(`./commands/${file}`)
+  const command = require(`./${file}`)
   client.commands.set(command.data.name, command)
 }
 
