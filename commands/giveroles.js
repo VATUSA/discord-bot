@@ -92,6 +92,9 @@ module.exports = {
                 facStaff = 'WM'
                 roles.push('WM')
               }
+              if (role.role === 'MTR') {
+                roles.push('Mentor')
+              }
             }
 
             //Determine Region
