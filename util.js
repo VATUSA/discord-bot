@@ -1,8 +1,7 @@
 exports = module.exports = {
-  name       : 'util',
-  description: 'Helper functions.',
-  fetch (client, callback) {
-    return client.guilds.fetch().then(_ => client.guilds.cache.forEach(g => {g.members.fetch().then(callback)}))
+  name: 'util',
+  fetch (client, guild = null, callback = null) {
+    return client.guilds.fetch().then(_ => client.guilds.cache.forEach(g => {g.members.fetch().then(() => {if (guild === g.id) callback()})}))
   },
   async fetchUser (client, id) {
     let user
@@ -55,12 +54,18 @@ exports = module.exports = {
   },
   sendError (interaction, msg, res, footer = true, header = false, ephemeral = true, generic = false) {
     const {MessageEmbed} = require('discord.js')
-    let embed
+
+    if (!interaction && !res) {
+      this.log('error', msg)
+      return false
+    }
     if (res)
       return res.json({
         status: 'error',
         msg   : msg
       })
+
+    let embed
     if (generic)
       embed = this.embed(msg).setTitle(header ? header : 'Error').setColor('#ff0000')
     else
@@ -109,5 +114,27 @@ exports = module.exports = {
         }
       })
     }
+  },
+  syncUserRoles (client, id) {
+    this.fetch(client, process.env.GUILD_ID, () => {
+      client.commands.get('giveRoles').execute(null, id, null, client.guilds.cache.get(process.env.GUILD_ID))
+    })
+  },
+  log (type, msg) {
+    const fs         = require('fs'),
+          moment     = require('moment'),
+          consoleMsg = `[${type.toUpperCase()}] ${msg}`
+
+    if (console.hasOwnProperty(type))
+      console[type](consoleMsg)
+    else
+      console.log(consoleMsg)
+
+    const data = `[${moment().format('YYYY-MM-DD HH:mm:ss')}] ${msg}\n`,
+          file = `${process.env.LOG_PATH}/${moment().format('YYYY-MM-DD')}.${type}.log`
+
+    fs.appendFile('./logs/' + type + '.log', data, (err) => {
+      if (err) console.error(err)
+    })
   }
 }

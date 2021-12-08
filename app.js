@@ -44,9 +44,14 @@ for (const file of eventFiles) {
 
 //Log in to Discord
 client.login(process.env.BOT_TOKEN).then(() => {
-//Start Server
+  //Start Server
   require('./server')(client)
+
+  //Start Cron Jobs
+  if (process.env.CRON_ENABLED === 'true')
+    require('./cron').init(client)
 }).catch(err => {
-  console.error(err)
+  util.log('error', 'Failed to log in to Discord')
+  util.log('error', err)
 })
 

@@ -1,4 +1,5 @@
 const {SlashCommandBuilder} = require('@discordjs/builders')
+const util = require('../../util')
 
 module.exports = {
   name       : 'giveRoles',
@@ -9,14 +10,12 @@ module.exports = {
   async execute (interaction, id, res, g) {
     //Initialize Vars
     const {MessageEmbed} = require('discord.js'),
-          axios          = require('axios'),
-          https          = require('https'),
           guild          = g ? g : interaction.guild,
           util           = require('../../util'),
           http           = util.http()
 
     //Make the API Call to determine user information
-    http.get('user/' + (interaction ? interaction.member.id : id) + '?d')
+    await http.get('user/' + (interaction ? interaction.member.id : id) + '?d')
       .then(async result => {
           //console.log(result)
           const {status, data} = result
@@ -46,23 +45,21 @@ module.exports = {
                 newNick    = member.nickname,
                 nickChange = false
 
-            if (member.permissions.has('ADMINISTRATOR')) {
-              const ownerName = interaction.guild.members.cache.get(interaction.guild.ownerId).nickname
-              return util.sendError(interaction, `Since you have an administrator role, you must contact the Server Owner (${ownerName}) to receive your roles.`, res, false, 'Administrator Roles')
+            if (member.permissions.has('ADMINISTRATOR') || user.rating === 'ADM') {
+              const ownerName = interaction?.guild.members.cache.get(interaction.guild.ownerId).nickname
+              return util.sendError(interaction, `Since you have an administrator role, you must contact the Server Owner ${ownerName ? '(' + ownerName + ')' : ''} to receive your roles.`, res, false, 'Administrator Roles')
             }
             //Determine Roles
             for (let i = 0; i < user.roles.length; i++) {
               //Roles Table
               const role = user.roles[i]
               if (role.role.match(/US\d+/)) {
-                roles.push('VATUSA Staff')
-                const ownerName = interaction.guild.members.cache.get(interaction.guild.ownerId).nickname
-                return util.sendError(interaction, `Since you have an administrator role, you must contact the Server Owner (${ownerName}) to receive your roles.`, res, false, 'Administrator Roles')
+                const ownerName = interaction?.guild.members.cache.get(interaction.guild.ownerId).nickname
+                return util.sendError(interaction, `Since you have an administrator role, you must contact the Server Owner ${ownerName ? '(' + ownerName + ')' : ''} to receive your roles.`, res, false, 'Administrator Roles')
               }
               if (role.role === 'USWT') {
-                roles.push('Web Team')
-                const ownerName = interaction.guild.members.cache.get(interaction.guild.ownerId).nickname
-                return util.sendError(interaction, `Since you have an administrator role, you must contact the Server Owner (${ownerName}) to receive your roles.`, res, false, 'Administrator Roles')
+                const ownerName = interaction?.guild.members.cache.get(interaction.guild.ownerId).nickname
+                return util.sendError(interaction, `Since you have an administrator role, you must contact the Server Owner ${ownerName ? '(' + ownerName + ')' : ''} to receive your roles.`, res, false, 'Administrator Roles')
               }
               if (role.role === 'ACE')
                 roles.push('ACE Team')
@@ -89,6 +86,9 @@ module.exports = {
               if (role.role === 'WM') {
                 facStaff = 'WM'
                 roles.push('WM')
+              }
+              if (role.role === 'MTR') {
+                roles.push('Mentor')
               }
             }
 
@@ -120,8 +120,8 @@ module.exports = {
                       break
                   }
                 }).catch(error => {
-                  console.error(error)
-                  return util.sendError(interaction, 'Unable to determine region from API.', res)
+                  util.sendError(interaction, 'Unable to determine region from API.', res)
+                  util.log(error)
                 })
               }
             }
@@ -161,7 +161,8 @@ module.exports = {
               })
               for (let i = 0; i < roles.length; i++) {
                 const role = guild.roles.cache.find(role => role.name === roles[i])
-                member.roles.add(role).catch(e => console.error(e))
+                if (!member.roles.cache.has(role.id))
+                  member.roles.add(role).catch(e => console.error(e))
                 roleStr += `${role} `
               }
               if (res)
@@ -180,17 +181,17 @@ module.exports = {
               embed.setFooter(nickChange ? `Your new nickname is: ${newNick}` : newNick)
 
               // Send the embed to the same channel as the message
-              return interaction.reply({embeds: [embed]})
+              return interaction ? interaction.reply({embeds: [embed]}) : true
             })
           }
         }
       )
       .catch(error => {
-        console.error(error)
         if (error.response.status === 404) {
           return util.sendError(interaction, 'Your Discord account is not linked on VATUSA or you are not in the VATUSA database. Link it here: https://vatusa.net/my/profile', res, false, 'Not Linked')
         }
-        return util.sendError(interaction, error.data !== undefined ? error.data.toJSON() : 'Unable to communicate with API.', res)
+        util.sendError(interaction, error.data !== undefined ? error.data.toJSON() : 'Unable to communicate with API.', res)
+        util.log(error)
       })
   }
 }

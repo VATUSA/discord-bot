@@ -22,7 +22,7 @@ exports = module.exports = function (client) {
             })
         },
         fetchRequired      = function (req, res, next) {
-          util.fetch(client, next)
+          util.fetch(client).then(next)
         }
 
   app.use(helmet())
@@ -87,6 +87,6 @@ exports = module.exports = function (client) {
   })
 
   app.listen(expressPort, () => {
-    console.log(`Express listening on port ${expressPort}`)
+    util.log('info', `Express listening on port ${expressPort}`)
   })
 }
