@@ -71,8 +71,9 @@ module.exports = {
                 const ownerName = interaction.guild.members.cache.get(interaction.guild.ownerId).nickname
                 return sendError(interaction, MessageEmbed, `Since you have an administrator role, you must contact the Server Owner (${ownerName}) to receive your roles.`, res, false, 'Administrator Roles')
               }
-              if (role.role === 'ACE')
+              if (role.role === 'ACE') {
                 roles.push('ACE Team')
+              }
               if (role.role === 'ATM') {
                 facStaff = 'ATM'
                 roles.push('ATM/DATM')
@@ -99,6 +100,9 @@ module.exports = {
               }
               if (role.role === 'MTR') {
                 roles.push('Mentor')
+              }
+              if (role.role === 'SMT') {
+                roles.push('Social Media Team')
               }
             }
 
