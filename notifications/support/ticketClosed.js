@@ -11,7 +11,7 @@ module.exports = exports = {
           id                                                   = data.id,
           assginedTo                                           = data.assignee,
           moment                                               = require('moment'),
-          {MessageSelectMenu, MessageActionRow, MessageButton} = require('discord.js'),
+          {MessageActionRow, MessageButton} = require('discord.js'),
           {time}                                               = require('@discordjs/builders'),
           interactionDurationMilliseconds                      = 1000 * 60 * 60 * 24 * 7,
           util                                                 = require('../../util')
@@ -83,7 +83,7 @@ module.exports = exports = {
                     .setColor('#04ba4a')]
                 })
               } else {
-                console.log(result.data)
+                util.log('error', '(NOTIFICATION ticketClosed) Error Reopening Ticket', result.data)
                 msg.reply({
                   embeds: [util.embed(result.data.msg)
                     .setTitle('❌ Error Reopening Ticket')
@@ -91,7 +91,7 @@ module.exports = exports = {
                 })
               }
             }).catch(err => {
-              console.log(err)
+              util.log('error', '(NOTIFICATION ticketClosed) Error Reopening Ticket', err)
               msg.reply({
                 embeds: [util.embed(err.data.msg)
                   .setTitle('❌ Error Reopening Ticket')

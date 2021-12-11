@@ -45,7 +45,7 @@ module.exports = {
                 newNick    = member.nickname,
                 nickChange = false
 
-            if (member.permissions.has('ADMINISTRATOR') || user.rating === 'ADM') {
+            if (member.permissions.has('ADMINISTRATOR') || user.rating_short === 'ADM') {
               const ownerName = interaction?.guild.members.cache.get(interaction.guild.ownerId).nickname
               return util.sendError(interaction, `Since you have an administrator role, you must contact the Server Owner ${ownerName ? '(' + ownerName + ')' : ''} to receive your roles.`, res, false, 'Administrator Roles')
             }
@@ -121,13 +121,17 @@ module.exports = {
                   }
                 }).catch(error => {
                   util.sendError(interaction, 'Unable to determine region from API.', res)
-                  util.log(error)
+                  util.log('error', '(COMMAND giveRoles) Unable to determine region from API.', error)
                 })
               }
             }
             determineRegion().then(async () => {
               //Determine Rating
-              roles.push(ratings[user.rating_short])
+              let rating = ratings[user.rating_short]
+              if (user.facility === 'ZZN' && (user.rating_short === 'I1' || user.rating_short === 'I3')) {
+                rating += ' (Visitor)'
+              }
+              roles.push(rating)
 
               //Determine Nickname
               for (let i = 0; i < roles.length; i++) {
@@ -148,7 +152,8 @@ module.exports = {
               //Assign Nickname
               if (newNick !== member.nickname) {
                 nickChange = true
-                member.setNickname(newNick, 'Roles Synchronization').catch(e => console.error(e))
+                if (newNick.length <= 32)
+                  member.setNickname(newNick, 'Roles Synchronization').catch(e => console.error(e))
               }
               //Assign Roles
               let roleStr  = '',
@@ -191,7 +196,7 @@ module.exports = {
           return util.sendError(interaction, 'Your Discord account is not linked on VATUSA or you are not in the VATUSA database. Link it here: https://vatusa.net/my/profile', res, false, 'Not Linked')
         }
         util.sendError(interaction, error.data !== undefined ? error.data.toJSON() : 'Unable to communicate with API.', res)
-        util.log(error)
+        util.log('error', '(COMMAND giveRoles) Unable to communicate with API.', error)
       })
   }
 }

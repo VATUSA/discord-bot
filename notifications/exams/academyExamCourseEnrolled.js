@@ -44,8 +44,7 @@ module.exports = {
         })
       }
     } else if (medium === 'channel') {
-      const staffContent = `An instructor has enrolled a student in an Academy rating course.`,
-            channel      = util.fetchChannelCache(client, guildId, channelId)
+      const channel = util.fetchChannelCache(client, guildId, channelId)
       if (channel) {
         channel.send({
           embeds: [staffEmbed]

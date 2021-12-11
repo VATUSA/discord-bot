@@ -5,6 +5,7 @@ exports = module.exports = {
 
     cron.schedule('0 */6 * * *', this.syncPilotsOnly(client))
     cron.schedule('0 */12 * * *', this.syncAllRoles(client))
+    cron.schedule('0 0 * * *', this.rotateLogs())
 
     util.log('task', 'Cron initialized')
   },
@@ -39,7 +40,7 @@ exports = module.exports = {
       })
 
       const end = performance.now()
-      util.log('task', '(syncAllRoles) Task finished in ' + (end - start).toFixed(2) * 1000 + 's')
+      util.log('task', '(syncAllRoles) Task finished in ' + (end - start).toFixed(2) / 1000 + 's')
     })
   },
   async syncPilotsOnly (client) {
@@ -54,8 +55,8 @@ exports = module.exports = {
       const givePilotsRoleChannel = client.guilds.cache.get(process.env.GUILD_ID).channels.cache.find(c => c.name === 'give-pilots-role')
       let reactionMessage
       await givePilotsRoleChannel.messages.fetch().then(m => reactionMessage = m.find(m => m.author.id === m.guild.ownerId))
-      reactionMessage.reactions.cache.forEach(async r => {
-        await r.users.fetch().then((u) => {
+      reactionMessage.reactions.cache.forEach(r => {
+        r.users.fetch().then((u) => {
           u.forEach(user => {
             const member    = reactionMessage.guild.members.cache.get(user.id),
                   pilotRole = reactionMessage.guild.roles.cache.find(role => role.name === 'Pilots')
@@ -76,8 +77,11 @@ exports = module.exports = {
                 member.setNickname(data.data.fname + ' ' + data.data.lname)
               }
             }).catch(err => {
-              if (err.status === 404) return
+              if (err.response.status === 404) return
 
+              util.log('task', `(syncPilotsOnly) Error while fetching user`)
+              util.log('error', `(TASK syncPilotsOnly) Error while fetching user`)
+              util.log('error', err)
             })
           })
         })
@@ -87,4 +91,16 @@ exports = module.exports = {
     })
 
   },
+
+  async rotateLogs () {
+    const util          = require('./util'),
+          fr            = require('find-remove'),
+          {performance} = require('perf_hooks'),
+          start         = performance.now()
+
+    util.log('task', '(rotateLogs) Task started')
+    fr('./logs', {age: {seconds: 60 * 60 * 24 * 7}, extensions: ['.log']})
+    setTimeout(() => util.log('task', '(rotateLogs) Task finished in ' + (performance.now() - start).toFixed(2) / 1000 + 's', 1000))
+  },
+
 }

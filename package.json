@@ -1,6 +1,6 @@
 {
   "name": "vatusa-discord-tmu",
-  "version": "1.1",
+  "version": "2.0",
   "description": "VATUSA Discord Bot",
   "author": "Blake Nahin <b.nahin@vatusa.net>",
   "main": "app.js",
@@ -23,6 +23,7 @@
     "erlpack": "github:hammerandchisel/erlpack",
     "express": "^4.17.1",
     "express-jwt": "^6.1.0",
+    "find-remove": "^4.0.3",
     "helmet": "^4.6.0",
     "jshint": "^2.13.1",
     "jsonwebtoken": "^8.5.1",

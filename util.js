@@ -120,20 +120,23 @@ exports = module.exports = {
       client.commands.get('giveRoles').execute(null, id, null, client.guilds.cache.get(process.env.GUILD_ID))
     })
   },
-  log (type, msg) {
+  log (type, msg, msg2 = null) {
     const fs         = require('fs'),
           moment     = require('moment'),
           consoleMsg = `[${type.toUpperCase()}] ${msg}`
 
-    if (console.hasOwnProperty(type))
+    if (console.hasOwnProperty(type)) {
       console[type](consoleMsg)
-    else
+      if (msg2) console[type](msg2)
+    } else {
       console.log(consoleMsg)
+      if (msg2) console[type](msg2)
+    }
 
     const data = `[${moment().format('YYYY-MM-DD HH:mm:ss')}] ${msg}\n`,
           file = `${process.env.LOG_PATH}/${moment().format('YYYY-MM-DD')}.${type}.log`
 
-    fs.appendFile('./logs/' + type + '.log', data, (err) => {
+    fs.appendFile(file, data, (err) => {
       if (err) console.error(err)
     })
   }
