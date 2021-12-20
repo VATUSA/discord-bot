@@ -51,7 +51,6 @@ client.login(process.env.BOT_TOKEN).then(() => {
   if (process.env.CRON_ENABLED === 'true')
     require('./cron').init(client)
 }).catch(err => {
-  util.log('error', 'Failed to log in to Discord')
-  util.log('error', err)
+  util.log('error', 'Failed to log in to Discord', err)
 })
 

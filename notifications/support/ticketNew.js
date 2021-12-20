@@ -138,10 +138,10 @@ module.exports = exports = {
     ) {
       const channel = await util.fetchChannelCache(client, guildId, channelId)
 
-      return channel.send({
+      return channel ? channel.send({
         embeds    : [embed],
         components: components
-      })
+      }) : false;
     }
   }
 }
