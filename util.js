@@ -133,6 +133,14 @@ exports = module.exports = {
       if (msg2) console[type](msg2)
     }
 
+    fs.open(process.env.LOG_PATH, 'r', (err, fd) => {
+      if (err) {
+        if (err.code === 'ENOENT') {
+          fs.mkdirSync(process.env.LOG_PATH, {recursive: true})
+        }
+      }
+    })
+
     const data = `[${moment().format('YYYY-MM-DD HH:mm:ss')}] ${msg}\n`,
           file = `${process.env.LOG_PATH}/${moment().format('YYYY-MM-DD')}.${type}.log`
 

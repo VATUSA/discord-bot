@@ -15,9 +15,7 @@ module.exports = exports = {
           {MessageSelectMenu, MessageActionRow, MessageButton} = require('discord.js'),
           {time}                                               = require('@discordjs/builders'),
           moment                                               = require('moment'),
-          interactionDurationMilliseconds                      = 1000 * 60 * 60 * 24 * 7,
-          axios                                                = require('axios'),
-          jwt                                                  = require('jsonwebtoken')
+          interactionDurationMilliseconds                      = 1000 * 60 * 60 * 24 * 7
 
     const fields = [
       {name: 'Subject', value: subject, inline: true},
@@ -104,7 +102,7 @@ module.exports = exports = {
                     .setColor('#04ba4a')]
                 })
               } else {
-                console.error(result.data)
+                util.log('(NOTIFICATION ticketNew) Error closing ticket', result.data)
                 msg.reply({
                   embeds: [util.embed(result.data?.msg ?? 'Please try again later.')
                     .setTitle('❌ Error Closing Ticket')
@@ -112,7 +110,7 @@ module.exports = exports = {
                 })
               }
             }).catch(err => {
-              console.error(err)
+              util.log('(NOTIFICATION ticketNew) Error closing ticket', err)
               msg.reply({
                 embeds: [util.embed(err.data?.msg ?? 'Please try again later.')
                   .setTitle('❌ Error Closing Ticket')
@@ -128,10 +126,45 @@ module.exports = exports = {
           assignMenuCollector.on('collect', i => {
             //Assign the ticket
             const cid = i.values[0]
-          }).on('end', _ => {
+            let name = ''
+            for (let option of options) {
+              if (option.value === String(cid))
+                name = option.label
+            }
+            msg.embeds[0].fields[2].value = name
+            util.http().post(`/support/tickets/${id}/assign`, {cid: cid, user_id: i.user.id}).then(result => {
+              if (result.status === 200 && result.data?.data?.status === 'OK') {
+                i.update({
+                  embeds    : [msg.embeds[0]],
+                  components: [util.singleButtonLink('View Ticket', 'https://vatusa.net/help/ticket/' + id)]
+                })
+                msg.reply({
+                  embeds: [util.embed('')
+                    .setTitle('✅ Ticket Assigned')
+                    .setColor('#04ba4a')]
+                })
+              } else {
+                util.log('error', '(NOTIFICATION ticketNew) Error assigning ticket', result.data)
+                msg.reply({
+                  embeds: [util.embed(result.data?.msg ?? 'Please try again later.')
+                    .setTitle('❌ Error Assigning Ticket')
+                    .setColor('#ff0000')]
+                })
+              }
+            }).catch(err => {
+              util.log('error', '(NOTIFICATION ticketNew) Error assigning ticket', err)
+              msg.reply({
+                embeds: [util.embed(err.data?.msg ?? 'Please try again later.')
+                  .setTitle('❌ Error Assigning Ticket')
+                  .setColor('#ff0000')]
+              })
+            })
+          }).on('end', i => {
             //Remove the assign menu
+            i.edit({
+              components: [util.singleButtonLink('View Ticket', 'https://vatusa.net/help/ticket/' + id)]
+            })
           })
-
         }
       )
     } else if (medium === 'channel'
@@ -141,7 +174,7 @@ module.exports = exports = {
       return channel ? channel.send({
         embeds    : [embed],
         components: components
-      }) : false;
+      }) : false
     }
   }
 }

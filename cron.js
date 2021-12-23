@@ -56,10 +56,11 @@ exports = module.exports = {
       let reactionMessage
       await givePilotsRoleChannel.messages.fetch().then(m => reactionMessage = m.find(m => m.author.id === m.guild.ownerId))
       reactionMessage.reactions.cache.forEach(r => {
-        r.users.fetch().then((u) => {
+        r.users.fetch().then(u => {
           u.forEach(user => {
             const member    = reactionMessage.guild.members.cache.get(user.id),
                   pilotRole = reactionMessage.guild.roles.cache.find(role => role.name === 'Pilots')
+            if(member === undefined) return
             if (member.roles.cache.size === 2 && member.roles.cache.has(pilotRole.id)) return
             http.get('user/' + user.id + '?d').then(result => {
               const {status, data} = result
@@ -89,7 +90,6 @@ exports = module.exports = {
       const end = performance.now()
       util.log('task', '(syncPilotsOnly) Task finished in ' + (end - start).toFixed(2) / 1000 + 's')
     })
-
   },
 
   async rotateLogs () {
