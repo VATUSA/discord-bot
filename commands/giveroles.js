@@ -51,7 +51,7 @@ module.exports = {
                     ADM: 'Administrator',
                   }
             let roles      = [],
-                facStaff   = false,
+                facStaff = [],
                 newNick    = member.nickname,
                 nickChange = false
 
@@ -75,27 +75,27 @@ module.exports = {
                 roles.push('ACE Team')
               }
               if (role.role === 'ATM') {
-                facStaff = 'ATM'
+                facStaff.push('ATM')
                 roles.push('ATM/DATM')
               }
               if (role.role === 'DATM') {
-                facStaff = 'DATM'
+                facStaff.push('DATM')
                 roles.push('ATM/DATM')
               }
               if (role.role === 'TA') {
-                facStaff = 'TA'
+                facStaff.push('TA')
                 roles.push('TA')
               }
               if (role.role === 'EC') {
-                facStaff = 'EC'
+                facStaff.push('EC')
                 roles.push('EC')
               }
               if (role.role === 'FE') {
-                facStaff = 'FE'
+                facStaff.push('FE')
                 roles.push('FE')
               }
               if (role.role === 'WM') {
-                facStaff = 'WM'
+                facStaff.push('WM')
                 roles.push('WM')
               }
               if (role.role === 'MTR') {
@@ -148,8 +148,8 @@ module.exports = {
                 } else if (roles[i] === 'Non-Member') {
                   newNick = `${user.fname} ${user.lname} | ${user.rating_short}`
                   i = roles.length
-                } else if (facStaff !== false) {
-                  newNick = `${user.fname} ${user.lname} | ${user.facility} ${facStaff}`
+                } else if (facStaff.length > 0) {
+                  newNick = `${user.fname} ${user.lname} | ${user.facility} ${facStaff.join('/')}`
                   i = roles.length
                 } else {
                   newNick = `${user.fname} ${user.lname} | ${user.facility} ${user.rating_short}`
