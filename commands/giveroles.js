@@ -67,10 +67,6 @@ module.exports = {
                 const ownerName = interaction.guild.members.cache.get(interaction.guild.ownerId).nickname
                 return sendError(interaction, MessageEmbed, `Since you have an administrator role, you must contact the Server Owner (${ownerName}) to receive your roles.`, res, false, 'Administrator Roles')
               }
-              if (role.role === 'USWT') {
-                const ownerName = interaction.guild.members.cache.get(interaction.guild.ownerId).nickname
-                return sendError(interaction, MessageEmbed, `Since you have an administrator role, you must contact the Server Owner (${ownerName}) to receive your roles.`, res, false, 'Administrator Roles')
-              }
               if (role.role === 'ACE') {
                 roles.push('ACE Team')
               }
@@ -103,6 +99,9 @@ module.exports = {
               }
               if (role.role === 'SMT') {
                 roles.push('Social Media Team')
+              }
+              if (role.role === 'USWT') {
+                roles.push('VATUSA Developer')
               }
             }
 
