@@ -117,16 +117,13 @@ module.exports = {
                   }
                   switch (parseInt(data.data.facility.info.region)) {
                     case 5:
-                      roles.push('Southern Region')
+                      roles.push('Central Region')
                       break
                     case 6:
-                      roles.push('Midwestern Region')
+                      roles.push('Western Region')
                       break
                     case 7:
-                      roles.push('Northeastern Region')
-                      break
-                    case 8:
-                      roles.push('Western Region')
+                      roles.push('Eastern Region')
                       break
                   }
                 }).catch(error => {
