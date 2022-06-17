@@ -60,13 +60,10 @@ client.login(process.env.BOT_TOKEN)
 app.use(helmet())
   .options('*', cors(corsOptions))
 app.post('/assignRoles/:id', cors(corsOptions), (req, res) => {
-  const id = req.params.id
-  if (!client.guilds.cache.get(process.env.DISCORD_ID).members.cache.get(id))
-    return res.json({
-      status: 'error',
-      msg   : 'You are not a member of the VATUSA Official Discord. Join it using the link below the Assign Roles button.'
-    })
-  client.commands.get('giveroles').execute(null, id, res, client.guilds.cache.get(process.env.DISCORD_ID))
+  const id = req.params.id;
+  client.guilds.cache.get(process.env.DISCORD_ID).members.fetch(id).then(member => {
+      client.commands.get('giveroles').execute(null, id, res, client.guilds.cache.get(process.env.DISCORD_ID))
+  })
 })
 app.get('/*', (req, res) => {
   res.send('Hello there. This is the VATUSA Discord Bot Server. If you are here, tell Blake the codeword: sharkbait.')
