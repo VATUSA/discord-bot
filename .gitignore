@@ -108,3 +108,6 @@ dist
 
 #Google Cloud Platform auth data
 gcp-auth.json
+
+#Idea Folder for WebStorm IDE
+./idea
