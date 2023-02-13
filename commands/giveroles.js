@@ -103,6 +103,9 @@ module.exports = {
               if (role.role === 'USWT') {
                 roles.push('VATUSA Developer')
               }
+              if (role.role === 'DICE') {
+                roles.push('DICE Team')
+              }
               if (role.role === 'DMT') {
                 roles.push('Discord Moderation Team')
               }
