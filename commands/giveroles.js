@@ -50,7 +50,7 @@ module.exports = {
                     SUP: 'Supervisor',
                     ADM: 'Administrator',
                   }
-            let roles      = [],
+            let roles      = ['Verified'],
                 facStaff = [],
                 newNick    = member.nickname,
                 nickChange = false
@@ -113,6 +113,9 @@ module.exports = {
 
             //Determine Region
             const determineRegion = async function () {
+              if (user.flag_homecontroller) roles.push('VATUSA Member')
+              else if (user.visiting_facilities.length > 0) roles.push('VATUSA Visitor')
+
               if (user.facility === 'ZAE') roles.push('Academy')
               else if (user.facility === 'ZZN') roles.push('Non-Member')
               else if (user.facility !== 'ZHQ') {
@@ -165,7 +168,7 @@ module.exports = {
               }
               //Assign Roles
               let roleStr  = '',
-                  excluded = ['Pilots', 'Trainers', 'Server Booster', 'VATGOV', 'Muted', 'ATS-ZHQ', 'Champion of Halloween']
+                  excluded = ['Pilots', 'Server Booster', 'VATGOV', 'Muted']
               member.roles.cache.forEach(role => {
                 if (role.id !== guild.roles.everyone.id
                   && excluded.indexOf(role.name) < 0
