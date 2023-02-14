@@ -59,6 +59,10 @@ module.exports = {
               const ownerName = interaction.guild.members.cache.get(interaction.guild.ownerId).nickname
               return sendError(interaction, MessageEmbed, `Since you have an administrator role, you must contact the Server Owner (${ownerName}) to receive your roles.`, res, false, 'Administrator Roles')
             }
+
+            if (user.flag_homecontroller) roles.push('VATUSA Member')
+            else if (user.visiting_facilities.length > 0) roles.push('VATUSA Visitor')
+
             //Determine Roles
             for (let i = 0; i < user.roles.length; i++) {
               //Roles Table
@@ -113,9 +117,6 @@ module.exports = {
 
             //Determine Region
             const determineRegion = async function () {
-              if (user.flag_homecontroller) roles.push('VATUSA Member')
-              else if (user.visiting_facilities.length > 0) roles.push('VATUSA Visitor')
-
               if (user.facility === 'ZAE') roles.push('Academy')
               else if (user.facility === 'ZZN') roles.push('Non-Member')
               else if (user.facility !== 'ZHQ') {
