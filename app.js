@@ -6,7 +6,12 @@
 //Initiate Environment Variables
 require('dotenv').config()
 const expressPort = process.env.SERVER_PORT,
-      mainURL     = process.env.MAIN_URL
+      mainURL     = process.env.MAIN_URL;
+
+// Event 'uncaughtException'
+process.on('uncaughtException', (error, source) => {
+    console.error(process.stderr.fd, error, source);
+});
 
 //Initiate Discord API and Express
 const {Client, Collection, Intents} = require('discord.js'),
@@ -66,7 +71,7 @@ app.post('/assignRoles/:id', cors(corsOptions), (req, res) => {
       const guild = client.guilds.cache.get(process.env.DISCORD_ID);
       guild.members.fetch(id).then(member => {
           client.commands.get('giveroles').execute(null, id, res, client.guilds.cache.get(process.env.DISCORD_ID))
-      })
+      });
   } catch (e) {
       console.log("Exception in /assignroles/" + id, e);
   }
