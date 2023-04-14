@@ -71,6 +71,8 @@ app.post('/assignRoles/:id', cors(corsOptions), (req, res) => {
       const guild = client.guilds.cache.get(process.env.DISCORD_ID);
       guild.members.fetch(id).then(member => {
           client.commands.get('giveroles').execute(null, id, res, client.guilds.cache.get(process.env.DISCORD_ID))
+      }).catch(error => {
+          console.error(error);
       });
   } catch (e) {
       console.log("Exception in /assignroles/" + id, e);
