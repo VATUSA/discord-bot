@@ -64,8 +64,6 @@ app.post('/assignRoles/:id', cors(corsOptions), (req, res) => {
   const id = req.params.id;
   client.guilds.cache.get(process.env.DISCORD_ID).members.fetch(id).then(member => {
       client.commands.get('giveroles').execute(null, id, res, client.guilds.cache.get(process.env.DISCORD_ID))
-  }).catch(error => {
-      console.error(error);
   })
 })
 app.get('/*', (req, res) => {
