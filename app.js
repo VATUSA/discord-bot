@@ -27,6 +27,7 @@ const {Client, Collection, Intents} = require('discord.js'),
 //Load Commands
 client.commands = new Collection()
 const fs = require('fs')
+const {errors} = require("jshint/src/messages");
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'))
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`)
@@ -63,6 +64,8 @@ app.post('/assignRoles/:id', cors(corsOptions), (req, res) => {
   const id = req.params.id;
   client.guilds.cache.get(process.env.DISCORD_ID).members.fetch(id).then(member => {
       client.commands.get('giveroles').execute(null, id, res, client.guilds.cache.get(process.env.DISCORD_ID))
+  }).catch(error => {
+      console.error(error);
   })
 })
 app.get('/*', (req, res) => {
