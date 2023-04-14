@@ -63,11 +63,12 @@ app.use(helmet())
 app.post('/assignRoles/:id', cors(corsOptions), (req, res) => {
   const id = req.params.id;
   try {
-      client.guilds.cache.get(process.env.DISCORD_ID).members.fetch(id).then(member => {
+      const guild = client.guilds.cache.get(process.env.DISCORD_ID);
+      guild.members.fetch(id).then(member => {
           client.commands.get('giveroles').execute(null, id, res, client.guilds.cache.get(process.env.DISCORD_ID))
       })
   } catch (e) {
-      console.error(e);
+      console.log("Exception in /assignroles/" + id, e);
   }
 })
 app.get('/*', (req, res) => {
