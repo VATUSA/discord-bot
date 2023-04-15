@@ -64,7 +64,7 @@ client.login(process.env.BOT_TOKEN)
 
 /** Server - Assign Roles **/
 app.use(helmet())
-  .options('*', cors(corsOptions))
+  .options('*', cors(corsOptions));
 app.post('/assignRoles/:id', cors(corsOptions), (req, res) => {
   const id = req.params.id;
   try {
@@ -73,14 +73,15 @@ app.post('/assignRoles/:id', cors(corsOptions), (req, res) => {
           client.commands.get('giveroles').execute(null, id, res, client.guilds.cache.get(process.env.DISCORD_ID))
       }).catch(error => {
           console.error(error);
+          res.send("An error occurred");
       });
   } catch (e) {
       console.log("Exception in /assignroles/" + id, e);
   }
-})
+});
 app.get('/*', (req, res) => {
   res.send('Hello there. This is the VATUSA Discord Bot Server. If you are here, tell Blake the codeword: sharkbait.')
-})
+});
 app.listen(expressPort, () => {
   console.log(`Express listening on port ${expressPort}`)
-})
+});
