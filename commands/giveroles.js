@@ -183,7 +183,7 @@ module.exports = {
                         })
                         for (let i = 0; i < roles.length; i++) {
                             const role = guild.roles.cache.find(role => role.name === roles[i])
-                            if (!member.roles.cache.has(role)) {
+                            if (!member.roles.cache.some(r => r.name === role)) {
                                 rolesChanged = true;
                             }
                             member.roles.add(role).catch(e => console.error(e))
