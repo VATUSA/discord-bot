@@ -203,7 +203,7 @@ module.exports = {
                             const log_embed = new MessageEmbed()
                                 .setTitle(newNick)
                                 .setColor(0x5cb85c)
-                                .setDescription(roleStr);
+                                .setDescription(`${member} ${roleStr}`);
                             const log_channel = guild.client.channels.cache.get('1096959022655094854');
                             log_channel.send({embeds: [log_embed]});
                         }
@@ -220,7 +220,7 @@ module.exports = {
                             // Set the color of the embed
                             .setColor(0x5cb85c)
                             // Set the main content of the embed
-                            .setDescription(`${member} ${roleStr}`);
+                            .setDescription(roleStr)
                         embed.setFooter(nickChange ? `Your new nickname is: ${newNick}` : newNick);
 
                         // Send the embed to the same channel as the message
