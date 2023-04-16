@@ -210,7 +210,7 @@ module.exports = {
                         if (rolesChanged || nameChanged) {
 
                             const log_embed = new MessageEmbed()
-                                .setTitle("")
+                                .setTitle("Roles Assigned")
                                 .setColor(0x5cb85c)
                                 .setDescription(roleStr)
                                 .setFooter(newNick);
