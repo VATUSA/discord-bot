@@ -178,6 +178,7 @@ module.exports = {
                                 && excluded.indexOf(role.name) < 0
                                 && roles.indexOf(role.name) < 0) {
                                 member.roles.remove(role).catch(e => console.error(e));
+                                rolesChanged = true;
                             }
                         })
                         for (let i = 0; i < roles.length; i++) {
@@ -208,7 +209,6 @@ module.exports = {
 
                         // Send to #robot-log
                         if (rolesChanged || nameChanged) {
-
                             const log_embed = new MessageEmbed()
                                 .setTitle("Roles Assigned")
                                 .setColor(0x5cb85c)
