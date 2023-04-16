@@ -193,10 +193,9 @@ module.exports = {
                         // Send to #robot-log
                         if (rolesChanged || nameChanged) {
                             const log_embed = new MessageEmbed()
-                                .setTitle("Roles Assigned")
+                                .setTitle(newNick)
                                 .setColor(0x5cb85c)
-                                .setDescription(roleStr)
-                                .setFooter(newNick);
+                                .setDescription(roleStr);
                             const log_channel = guild.client.channels.cache.get('1096959022655094854');
                             log_channel.send({embeds: [log_embed]});
                         }
