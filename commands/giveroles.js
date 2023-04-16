@@ -130,7 +130,9 @@ module.exports = {
                             displayName = `${user.fname.split(' ')[0]}  ${user.lname.charAt(0)}`;
                         }
 
-                        if (user.facility === 'ZAE') {
+                        if (member.roles.find(r => r.name === 'VATGOV')) {
+                            newNick = `${displayName} | VATGOV`
+                        } else if (user.facility === 'ZAE') {
                             newNick = `${displayName} | ZAE`;
                         } else if (user.facility === 'ZZN') {
                             newNick = `${displayName} | ${user.rating_short}`;
