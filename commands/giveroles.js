@@ -56,7 +56,7 @@ module.exports = {
                             nickChange = false
 
                         if (member.permissions.has('ADMINISTRATOR')) {
-                            const ownerName = interaction.guild.members.cache.get(interaction.guild.ownerId).nickname
+                            const ownerName = guild.members.cache.get(guild.ownerId).nickname
                             return sendError(interaction, MessageEmbed, `Since you have an administrator role, you must contact the Server Owner (${ownerName}) to receive your roles.`, res, false, 'Administrator Roles')
                         }
 
@@ -68,7 +68,7 @@ module.exports = {
                             //Roles Table
                             const role = user.roles[i]
                             if (role.role.match(/US\d+/)) {
-                                const ownerName = interaction.guild.members.cache.get(interaction.guild.ownerId).nickname
+                                const ownerName = guild.members.cache.get(guild.ownerId).nickname
                                 return sendError(interaction, MessageEmbed, `Since you have an administrator role, you must contact the Server Owner (${ownerName}) to receive your roles.`, res, false, 'Administrator Roles')
                             }
                             if (role.role === 'ACE') {
