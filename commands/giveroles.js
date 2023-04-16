@@ -189,6 +189,18 @@ module.exports = {
                             member.roles.add(role).catch(e => console.error(e))
                             roleStr += `${role} `
                         }
+
+                        // Send to #robot-log
+                        if (rolesChanged || nameChanged) {
+                            const log_embed = new MessageEmbed()
+                                .setTitle("Roles Assigned")
+                                .setColor(0x5cb85c)
+                                .setDescription(roleStr)
+                                .setFooter(newNick);
+                            const log_channel = guild.client.channels.cache.get('1096959022655094854');
+                            log_channel.send({embeds: [log_embed]});
+                        }
+
                         if (res)
                             return res.json({
                                 status: 'OK',
@@ -206,17 +218,6 @@ module.exports = {
 
                         // Send the embed to the same channel as the message
                         interaction.reply({embeds: [embed]});
-
-                        // Send to #robot-log
-                        if (rolesChanged || nameChanged) {
-                            const log_embed = new MessageEmbed()
-                                .setTitle("Roles Assigned")
-                                .setColor(0x5cb85c)
-                                .setDescription(roleStr)
-                                .setFooter(newNick);
-                            const log_channel = guild.client.channels.cache.get('1096959022655094854');
-                            log_channel.send({embeds: [log_embed]});
-                        }
                     }
                 }
             )
