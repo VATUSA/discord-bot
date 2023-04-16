@@ -63,8 +63,6 @@ module.exports = {
                         if (user.flag_homecontroller) roles.push('VATUSA Member')
                         else if (user.visiting_facilities.length > 0) roles.push('VATUSA Visitor')
 
-                        const roleFacilitiesByTitle = {};
-
                         //Determine Roles
                         for (let i = 0; i < user.roles.length; i++) {
                             //Roles Table
@@ -163,10 +161,14 @@ module.exports = {
                             newNick = `${displayName} | ${user.facility} ${user.rating_short}`;
                         }
 
+                        let rolesChanged = false,
+                            nameChanged = false;
+
                         //Assign Nickname
                         if (newNick !== member.nickname) {
-                            nickChange = true
-                            member.setNickname(newNick, 'Roles Synchronization').catch(e => console.error(e))
+                            nickChange = true;
+                            member.setNickname(newNick, 'Roles Synchronization').catch(e => console.error(e));
+                            nameChanged = true;
                         }
                         //Assign Roles
                         let roleStr = '',
@@ -174,11 +176,15 @@ module.exports = {
                         member.roles.cache.forEach(role => {
                             if (role.id !== guild.roles.everyone.id
                                 && excluded.indexOf(role.name) < 0
-                                && roles.indexOf(role.name) < 0)
-                                member.roles.remove(role).catch(e => console.error(e))
+                                && roles.indexOf(role.name) < 0) {
+                                member.roles.remove(role).catch(e => console.error(e));
+                            }
                         })
                         for (let i = 0; i < roles.length; i++) {
                             const role = guild.roles.cache.find(role => role.name === roles[i])
+                            if (!member.roles.cache.has(role)) {
+                                rolesChanged = true;
+                            }
                             member.roles.add(role).catch(e => console.error(e))
                             roleStr += `${role} `
                         }
@@ -195,10 +201,22 @@ module.exports = {
                             .setColor(0x5cb85c)
                             // Set the main content of the embed
                             .setDescription(roleStr)
-                        embed.setFooter(nickChange ? `Your new nickname is: ${newNick}` : newNick)
+                        embed.setFooter(nickChange ? `Your new nickname is: ${newNick}` : newNick);
 
                         // Send the embed to the same channel as the message
-                        interaction.reply({embeds: [embed]})
+                        interaction.reply({embeds: [embed]});
+
+                        // Send to #robot-log
+                        if (rolesChanged || nameChanged) {
+
+                            const log_embed = new MessageEmbed()
+                                .setTitle("")
+                                .setColor(0x5cb85c)
+                                .setDescription(roleStr)
+                                .setFooter(newNick);
+                            const log_channel = guild.client.channels.cache.get('1096959022655094854');
+                            log_channel.send({embeds: [log_embed]});
+                        }
                     }
                 }
             )
