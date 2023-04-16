@@ -135,6 +135,9 @@ module.exports = {
 
                         if (member.roles.cache.find(r => r.name === 'VATGOV')) {
                             newNick = `${displayName} | VATGOV`
+                        } else if (user.rating < 1) {
+                            roles = [];
+                            newNick = `${displayName}`;
                         } else if (user.facility === 'ZAE') {
                             newNick = `${displayName} | ZAE`;
                         } else if (user.facility === 'ZZN') {
@@ -217,7 +220,7 @@ module.exports = {
                             // Set the color of the embed
                             .setColor(0x5cb85c)
                             // Set the main content of the embed
-                            .setDescription(roleStr)
+                            .setDescription(`${member} ${roleStr}`);
                         embed.setFooter(nickChange ? `Your new nickname is: ${newNick}` : newNick);
 
                         // Send the embed to the same channel as the message
