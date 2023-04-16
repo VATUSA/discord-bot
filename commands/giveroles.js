@@ -72,46 +72,49 @@ module.exports = {
                                 return sendError(interaction, MessageEmbed, `Since you have an administrator role, you must contact the Server Owner (${ownerName}) to receive your roles.`, res, false, 'Administrator Roles')
                             }
                             if (role.role === 'ACE') {
-                                roles.push('ACE Team')
+                                roles.push('ACE Team');
                             }
                             if (role.role === 'ATM') {
-                                facStaff.push('ATM')
-                                roles.push('ATM/DATM')
+                                facStaff.push('ATM');
+                                roles.push('ATM/DATM');
                             }
                             if (role.role === 'DATM') {
-                                facStaff.push('DATM')
-                                roles.push('ATM/DATM')
+                                facStaff.push('DATM');
+                                roles.push('ATM/DATM');
                             }
                             if (role.role === 'TA') {
-                                facStaff.push('TA')
-                                roles.push('TA')
+                                facStaff.push('TA');
+                                roles.push('TA');
                             }
                             if (role.role === 'EC') {
-                                facStaff.push('EC')
-                                roles.push('EC')
+                                facStaff.push('EC');
+                                roles.push('EC');
                             }
                             if (role.role === 'FE') {
-                                facStaff.push('FE')
-                                roles.push('FE')
+                                facStaff.push('FE');
+                                roles.push('FE');
                             }
                             if (role.role === 'WM') {
-                                facStaff.push('WM')
-                                roles.push('WM')
+                                facStaff.push('WM');
+                                roles.push('WM');
                             }
                             if (role.role === 'MTR') {
-                                roles.push('Mentor')
+                                roles.push('Mentor');
                             }
                             if (role.role === 'SMT') {
-                                roles.push('Social Media Team')
+                                roles.push('Social Media Team');
                             }
                             if (role.role === 'USWT') {
-                                roles.push('VATUSA Developer')
+                                roles.push('VATUSA Developer');
                             }
                             if (role.role === 'DICE') {
-                                roles.push('DICE Team')
+                                roles.push('DICE Team');
                             }
                             if (role.role === 'DMT') {
-                                roles.push('Discord Moderation Team')
+                                roles.push('Discord Moderation Team');
+                            }
+                            if (role.role === 'DCC') {
+                                roles.push('DCC Staff');
                             }
                         }
 
