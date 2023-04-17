@@ -224,7 +224,7 @@ module.exports = {
                         embed.setFooter(nickChange ? `Your new nickname is: ${newNick}` : newNick);
 
                         // Send the embed to the same channel as the message
-                        interaction.reply({embeds: [embed]});
+                        interaction.reply({embeds: [embed], ephemeral: true});
                     }
                 }
             )
