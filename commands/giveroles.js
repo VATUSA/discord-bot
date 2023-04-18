@@ -124,11 +124,11 @@ module.exports = {
 
                         // Better Determine Nickname
                         displayName = `${user.fname} ${user.lname}`;
-                        if (displayName.length > 25) {
+                        if (displayName.length > 20) {
                             // Remove split first name
                             displayName = `${user.fname.split(' ')[0]} ${user.lname}`;
                         }
-                        if (displayName.length > 25) {
+                        if (displayName.length > 20) {
                             // Remove split first name and use Last Initial
                             displayName = `${user.fname.split(' ')[0]}  ${user.lname.charAt(0)}`;
                         }
