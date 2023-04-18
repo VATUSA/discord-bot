@@ -253,5 +253,5 @@ function sendError(interaction, me, msg, res, footer = true, header = false) {
 
     if (footer) embed.setFooter('Please try again later')
     // Send the embed to the same channel as the message
-    interaction.reply({embeds: [embed]})
+    interaction.reply({embeds: [embed], ephemeral: true})
 }
